@@ -1,0 +1,22 @@
+name: Install the educates CLI
+description: >-
+  Installs the educates CLI from the pinned educates-training-platform
+  release, checked against the release's checksums.txt, and puts it on
+  PATH. Runs on a Linux amd64 runner.
+
+runs:
+  using: composite
+  steps:
+    - name: Install the educates CLI
+      shell: bash
+      env:
+        # The one place the CLI version is set. A package's digests depend
+        # on the CLI build that publishes it, so a new version can move
+        # every tag to a new digest: bump it in a change of its own, whose
+        # description says so.
+        EDUCATES_VERSION: 4.0.0-alpha.14
+      run: |
+        bin=$RUNNER_TEMP/educates/bin
+        "$GITHUB_ACTION_PATH/install.sh" "$EDUCATES_VERSION" "$bin"
+        echo "$bin" >> "$GITHUB_PATH"
+        "$bin/educates" version
