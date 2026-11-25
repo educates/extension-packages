@@ -4,7 +4,8 @@
 # them in a workshop generated for them.
 #
 # Runs with bash 3.2, as macOS ships it, and later, on macOS and Linux.
-# Besides the standard Unix tools it needs only educates, curl and unzip.
+# Besides the standard Unix tools it needs only bash, educates, curl, tar
+# and unzip.
 
 set -euo pipefail
 

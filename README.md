@@ -210,6 +210,8 @@ and these helpers defined:
 `$DOWNLOADS` names an empty directory for the downloads, which is removed
 afterwards. A fetch script takes the version from the manifest, so a new
 version changes the version in `package.yaml` and the recorded checksums.
+It also changes the package's reference, `<name>:<version>`, in the
+package's README and in its row of the [Packages](#packages) table.
 
 ### Setup scripts
 
