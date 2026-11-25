@@ -33,8 +33,24 @@ merge_json() {
   fi
 }
 
-# Milliseconds since the epoch, from the GNU date the workshop images have.
-start=$(date +%s%3N)
+# Prints the milliseconds since the epoch. A date without %N, which the
+# GNU date the workshop images have knows, gives whole seconds, and a date
+# that fails gives 0, so that timing the script never fails it.
+now_ms() {
+  ms=$(date +%s%3N 2>/dev/null) || ms=
+  case $ms in
+    "" | *[!0-9]*)
+      ms=$(date +%s 2>/dev/null) || ms=
+      case $ms in
+        "" | *[!0-9]*) ms=0 ;;
+        *) ms=${ms}000 ;;
+      esac
+      ;;
+  esac
+  echo "$ms"
+}
+
+start=$(now_ms)
 
 mkdir -p "$EXTENSIONS_DIR"
 count=0
@@ -54,5 +70,8 @@ merge_json "$EXTENSIONS_DIR/extensions.json" "$PACKAGE_DIR/extensions.json" '
 
 merge_json "$SETTINGS" "$PACKAGE_DIR/settings.json" '.[0] + .[1]'
 
-elapsed=$(($(date +%s%3N) - start))
+elapsed=$(($(now_ms) - start))
+if [ "$elapsed" -lt 0 ]; then
+  elapsed=0
+fi
 echo "vscode-java-tools-oci-overlay put $count extensions in place in $((elapsed / 1000)).$(printf '%03d' $((elapsed % 1000))) seconds"
