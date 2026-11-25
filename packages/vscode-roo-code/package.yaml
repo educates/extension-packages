@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: vscode-roo-code
+version: 3.22.5
+description: The Roo Code AI coding agent extension, installed in the workshop editor.

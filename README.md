@@ -16,6 +16,7 @@ with the `files` form.
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
 | [vscode-continue-dev](packages/vscode-continue-dev/README.md) | `ghcr.io/educates/extension-packages/vscode-continue-dev:1.1.63` | The Continue AI code assistant extension, installed in the workshop editor, with model and MCP server configuration. |
+| [vscode-roo-code](packages/vscode-roo-code/README.md) | `ghcr.io/educates/extension-packages/vscode-roo-code:3.22.5` | The Roo Code AI coding agent extension, installed in the workshop editor. |
 
 ## Using a package
 
