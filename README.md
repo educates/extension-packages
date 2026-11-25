@@ -15,6 +15,7 @@ with the `files` form.
 | Package | Reference | Description |
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [chainloop](packages/chainloop/README.md) | `ghcr.io/educates/extension-packages/chainloop:1.89.8` | The Chainloop command line tool, chainloop, with bash completion. |
 
 ## Using a package
 
