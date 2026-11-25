@@ -20,8 +20,9 @@ PACKAGES_DIR=$ROOT/packages
 # The template try generates its workshop from.
 TRY_TEMPLATE_DIR=$ROOT/try-workshop
 
-# The local registry, as educates local registry deploy runs it, which try
-# publishes to and the workshops it deploys resolve as $(image_repository).
+# The local registry, as educates local registry deploy runs it, which
+# publish defaults to, try publishes to, and the workshops try deploys
+# resolve as $(image_repository).
 LOCAL_REGISTRY=localhost:5001
 
 # The reserved directories of a package source, and the directories under
@@ -284,7 +285,7 @@ cmd_fetch() {
 }
 
 cmd_publish() {
-  local image_repository=localhost:5001
+  local image_repository=$LOCAL_REGISTRY
   local publish_flags=() names=()
   local selected name
 
