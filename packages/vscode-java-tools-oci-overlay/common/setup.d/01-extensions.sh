@@ -15,22 +15,27 @@ PACKAGE_DIR=$(cd "$(dirname "$0")/.." && pwd)
 EXTENSIONS_DIR=$HOME/.local/share/code-server/extensions
 SETTINGS=$HOME/.local/share/code-server/User/settings.json
 
-# merge_json FILE PACKAGE_FILE FILTER
+# merge_json FILE PACKAGE_FILE FILTER [JQ_OPTION...]
 #
 # Replaces FILE with what the jq FILTER makes of FILE and PACKAGE_FILE,
-# read as .[0] and .[1], or copies PACKAGE_FILE to FILE when there is no
-# FILE yet.
+# read as .[0] and .[1], FILE being read as null when there is none yet.
+# Each JQ_OPTION, such as --arg NAME VALUE, is passed to jq.
 merge_json() {
-  if [ -f "$1" ]; then
-    if ! jq -s "$3" "$1" "$2" > "$1.tmp"; then
-      rm -f "$1.tmp"
-      return 1
-    fi
-    mv "$1.tmp" "$1"
+  file=$1
+  package_file=$2
+  filter=$3
+  shift 3
+  mkdir -p "$(dirname "$file")"
+  if [ -f "$file" ]; then
+    set -- "$@" "$filter" "$file" "$package_file"
   else
-    mkdir -p "$(dirname "$1")"
-    cp "$2" "$1"
+    set -- "$@" "[null] + . | $filter" "$package_file"
   fi
+  if ! jq -s "$@" > "$file.tmp"; then
+    rm -f "$file.tmp"
+    return 1
+  fi
+  mv "$file.tmp" "$file"
 }
 
 # Prints the milliseconds since the epoch. A date without %N, which the
@@ -62,11 +67,23 @@ for extension in "$PACKAGE_DIR"/extensions/*; do
 done
 
 # Each of the package's entries replaces any entry for the same extension.
+# The package's file was recorded under another home directory, so each
+# absolute path in an entry, its location's path, and its fsPath and
+# external URL where it has them, is set to the extension's directory
+# under $EXTENSIONS_DIR, which its relativeLocation names.
 merge_json "$EXTENSIONS_DIR/extensions.json" "$PACKAGE_DIR/extensions.json" '
+  def in_extensions_dir:
+    ($extensions_dir + "/" + .relativeLocation) as $path
+    | .location.path = $path
+    | if .location | has("fsPath") then .location.fsPath = $path else . end
+    | if .location | has("external")
+      then .location.external = "file://" + ($path | split("/") | map(@uri) | join("/"))
+      else . end;
   (.[1] | map(.identifier.id | ascii_downcase)) as $ids
-  | [.[0][] | select((.identifier.id | ascii_downcase) as $id
+  | [(.[0] // [])[] | select((.identifier.id | ascii_downcase) as $id
       | $ids | any(. == $id) | not)]
-    + .[1]'
+    + (.[1] | map(in_extensions_dir))' \
+  --arg extensions_dir "$EXTENSIONS_DIR"
 
 merge_json "$SETTINGS" "$PACKAGE_DIR/settings.json" '.[0] + .[1]'
 
