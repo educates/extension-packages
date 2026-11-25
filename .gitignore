@@ -1,0 +1,4 @@
+# The directories fetch scripts download into, which hold nothing committed
+# and which the package script removes before each fetch.
+/packages/*/*/bin/
+/packages/*/*/extensions/

@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: hello
+version: 1.0.0
+description: A fixture package for the package script's tests.
