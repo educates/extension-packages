@@ -188,6 +188,10 @@ and these helpers defined:
 - `install_file SOURCE TARGET MODE` copies `SOURCE` to `TARGET`, creating
   its directory, and gives it `MODE`: 0755 for a program, 0644 for any
   other file.
+- `unpack_zip ARCHIVE DIR` unpacks the whole zip archive `ARCHIVE` into
+  `DIR`, creating it. Whatever modes the archive recorded, each directory
+  under `DIR` gets mode 0755, and each file 0755 when it has any execute
+  bit and 0644 otherwise.
 
 `$DOWNLOADS` names an empty directory for the downloads, which is removed
 afterwards. A fetch script takes the version from the manifest, so a new
