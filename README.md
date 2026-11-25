@@ -15,6 +15,9 @@ with the `files` form.
 | Package | Reference | Description |
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
+| [github](packages/github/README.md) | `ghcr.io/educates/extension-packages/github:2.74.2` | The GitHub command line tool, gh, with bash completion. |
+| [toolhive](packages/toolhive/README.md) | `ghcr.io/educates/extension-packages/toolhive:0.1.7` | The ToolHive command line tool for MCP servers, thv, with bash completion. |
 | [vscode-java-tools](packages/vscode-java-tools/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools:0.29.2` | The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor. |
 | [vscode-java-tools-oci-overlay](packages/vscode-java-tools-oci-overlay/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools-oci-overlay:0.29.2` | The Extension Pack for Java for the workshop editor, unpacked ahead of time and copied into place without installing it, for a faster start. |
 
@@ -190,6 +193,11 @@ and these helpers defined:
 - `install_file SOURCE TARGET MODE` copies `SOURCE` to `TARGET`, creating
   its directory, and gives it `MODE`: 0755 for a program, 0644 for any
   other file.
+- `extract_tar ARCHIVE MEMBER TARGET MODE` extracts the file `MEMBER`, its
+  path inside the tar archive `ARCHIVE`, to `TARGET` with `MODE`, as
+  `install_file` does, and writes nothing else from the archive. It reads
+  any archive `tar` recognizes, compressed or not, with bsdtar on macOS
+  and GNU tar on Linux.
 - `unpack_zip ARCHIVE DIR` unpacks the whole zip archive `ARCHIVE` into
   `DIR`, creating it. Whatever modes the archive recorded, each directory
   under `DIR` gets mode 0755, and each file 0755 when it has any execute

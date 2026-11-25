@@ -146,6 +146,24 @@ install_file() {
   chmod "$mode" "$target"
 }
 
+# extract_tar ARCHIVE MEMBER TARGET MODE
+#
+# Extracts MEMBER, the path of a file inside the tar archive ARCHIVE, to
+# TARGET, creating TARGET's directory, and gives it MODE. Nothing else in
+# the archive is written anywhere. ARCHIVE may be compressed in any way tar
+# recognizes when it reads, such as gzip.
+extract_tar() {
+  local archive=$1 member=$2 target=$3 mode=$4
+  mkdir -p "$(dirname "$target")" || return 1
+  rm -f "$target" || return 1
+  if ! tar -xOf "$archive" "$member" > "$target"; then
+    rm -f "$target"
+    echo "Error: unable to extract $member from $archive" >&2
+    return 1
+  fi
+  chmod "$mode" "$target"
+}
+
 # unpack_zip ARCHIVE DIR
 #
 # Unpacks the whole zip archive ARCHIVE into DIR, creating DIR, and gives
@@ -161,7 +179,7 @@ unpack_zip() {
   chmod -R u=rwX,go=rX "$dir"
 }
 
-FETCH_HELPERS="manifest_version sha256_of download install_file unpack_zip"
+FETCH_HELPERS="manifest_version sha256_of download install_file extract_tar unpack_zip"
 
 # Prints the name of every package: each directory under packages/ that
 # holds a package.yaml, in name order.
