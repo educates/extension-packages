@@ -15,6 +15,7 @@ with the `files` form.
 | Package | Reference | Description |
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
 
 ## Using a package
 
