@@ -48,15 +48,17 @@ and a local registry.
 
 ### The package script
 
-`package.sh` at the root of the repository fetches and publishes the
-packages. Each command acts on the packages named, or on every package
-when none is, and fails listing the packages there are when a name is
-unknown.
+`package.sh` at the root of the repository fetches, publishes and tries
+the packages. Each command acts on the packages named, or on every package
+when none is, except `try`, which needs at least one. Each fails listing
+the packages there are when a name is unknown.
 
 ```
 ./package.sh list [<package>...]
 ./package.sh fetch [<package>...]
 ./package.sh publish [--dry-run] [--image-repository REPO] [registry flags] [<package>...]
+./package.sh try [--cluster] [--package-delivery image-mount|fetch]
+    [--workshop-image IMAGE] [--output DIR] [--no-deploy] <package>...
 ```
 
 - `list` prints the package names, one per line.
@@ -71,6 +73,9 @@ unknown.
   registry. The registry flags of `educates package publish`, such as
   `--registry-username`, `--registry-password` and `--registry-insecure`,
   are passed to it unchanged.
+- `try` publishes packages to the local registry and opens a workshop
+  session that uses them, as [Trying packages](#trying-packages)
+  describes.
 
 `publish` always publishes. Publishing an unchanged package again with the
 same `educates` CLI pushes an identical image index, so its tag keeps its
@@ -85,6 +90,65 @@ registry:
 ./package.sh publish argocd
 ```
 
+### Trying packages
+
+`try` checks packages in a real workshop session in one step, so that no
+package needs a sample workshop of its own:
+
+```
+./package.sh try argocd
+```
+
+It takes one or more packages, and:
+
+1. publishes them to the local registry at `localhost:5001`, as `publish`
+   does;
+2. generates a workshop for them from the template in `try-workshop/`, in
+   the directory `--output` names, which must be new or empty, or else in
+   a new temporary directory;
+3. publishes the workshop's content to the local registry with
+   `educates workshop publish`;
+4. deploys the workshop with `educates docker workshop deploy`, which
+   opens it in the browser, or, with `--cluster`, to the current cluster
+   with `educates cluster workshop deploy --open-browser`.
+
+Run `educates local registry deploy` first, to start the local registry.
+`try` prints where it wrote the workshop and, after deploying it, the
+command that deletes it, such as
+`educates docker workshop delete --file DIR`. `--no-deploy` stops before
+deploying, so that the workshop can be inspected, or kept as a starting
+point for a real one.
+
+`--package-delivery image-mount` or `--package-delivery fetch` is passed
+to `educates docker workshop deploy`, to force a delivery other than the
+one the Docker daemon supports best. On a cluster, the
+`packageDelivery.imageMount` setting of `EducatesClusterConfig` chooses
+the delivery, so `--cluster` takes no `--package-delivery`.
+`--workshop-image` sets the workshop's image, such as
+`jdk21-environment:*` for a package that needs a JDK.
+
+The workshop is named `try-` followed by the package names, joined by
+hyphens. A name longer than 41 characters is cut short and ends with a
+hash of the whole name, so that the name a cluster deploy gives the
+workshop, `educates-cli--<name>-<hash>`, stays within the 63 characters
+of a Kubernetes label value. The workshop:
+
+- declares each package as `$(image_repository)/<name>:<version>`, which
+  resolves to the local registry under Docker and on a local cluster
+  alike, with `imagePullPolicy: Always`, so that a republished tag is
+  pulled again;
+- takes its content from
+  `$(image_repository)/<workshop>-files:$(workshop_version)`;
+- enables the terminal and the editor, disables the other dashboard
+  applications, and asks for 3Gi of memory, which the VS Code packages
+  need.
+
+Its first page shows, for each package, the package manifest, the
+programs in its `bin` and the line of `download-workshop.log` saying how
+the platform delivered it, `image mount` or `package fetch`, as commands
+to click. The validation page of each package that has one follows, in
+package name order.
+
 ### Package sources
 
 Each package is a directory under `packages/`, named after the package:
@@ -94,6 +158,7 @@ packages/argocd/
   package.yaml                    the package manifest
   fetch.sh                        downloads the upstream files
   README.md                       what the package provides and needs
+  workshop.md                     the validation page, optional
   common/setup.d/01-completion.sh run in the session when it starts
   linux-amd64/bin/argocd          fetched
   linux-arm64/bin/argocd          fetched
@@ -103,8 +168,8 @@ The manifest gives the package's `name`, which is also its directory
 name, its `version`, the upstream tool's version without a leading `v`,
 and a one-line `description`. `educates package publish` publishes the
 manifest with the `common`, `linux-amd64` and `linux-arm64` directories,
-and lists everything else in the source as ignored, so the README and
-the fetch script appear in that listing.
+and lists everything else in the source as ignored, so the README, the
+fetch script and the validation page appear in that listing.
 
 Fetched files go only into the `bin` and `extensions` directories under
 `common`, `linux-amd64` and `linux-arm64`. Nothing in those is committed:
@@ -144,6 +209,15 @@ No package ships `profile.d`: the platform puts a package's `bin` on
 `PATH`. An environment variable is written as a `NAME=VALUE` line to the
 file `$WORKSHOP_ENV` names.
 
+### Validation pages
+
+A package can have a validation page, `workshop.md` beside its manifest,
+which `try` adds to the workshop it generates. The page is a Markdown page
+for the workshop's Hugo renderer, starting with front matter that gives
+its `title`. Its clickable actions check what the package provides, such
+as running a program in a new terminal or opening the editor. `try` adds
+only the page, so the page must need nothing outside the package.
+
 ### Tests
 
 The bats suite in `test/` drives the package script against a fixture
@@ -156,3 +230,9 @@ bats test
 The publish tests push to the registry `TEST_REGISTRY` names,
 `localhost:5001` by default, under a new repository for each test. Run
 `educates local registry deploy` first to start that registry.
+
+The `try` tests publish to `localhost:5001` whatever `TEST_REGISTRY`
+names, since `try` always publishes to the local registry, and they leave
+the fixture packages and their workshops' content there. They deploy
+nothing: a stand-in for `educates` records each deploy instead of running
+it.
