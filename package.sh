@@ -242,9 +242,9 @@ clear_fetched() {
   done
 }
 
-# Clears a package's fetched directories and runs its fetch script. When
-# the fetch script fails, removes the fetched directories again, so that
-# nothing partial remains.
+# Clears a package's fetched directories and runs its fetch script, and
+# fails when the package has none. When the fetch script fails, removes the
+# fetched directories again, so that nothing partial remains.
 fetch_package() {
   local name=$1
   local source=$PACKAGES_DIR/$name
@@ -252,7 +252,8 @@ fetch_package() {
 
   clear_fetched "$source"
   if [ ! -f "$source/fetch.sh" ]; then
-    return 0
+    echo "Error: unable to fetch $name, $source/fetch.sh is missing" >&2
+    return 1
   fi
 
   echo "Fetching $name" >&2

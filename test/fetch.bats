@@ -67,6 +67,16 @@ EOF
   [ "$(list_files "$REPO/packages/hello")" = "$(list_files "$FIXTURES/packages/hello")" ]
 }
 
+@test "a package without a fetch script fails the fetch, naming the package and the file" {
+  rm "$REPO/packages/hello/fetch.sh"
+
+  run "$SCRIPT" fetch hello
+
+  [ "$status" -ne 0 ]
+  [ "$output" = "Error: unable to fetch hello, $REPO/packages/hello/fetch.sh is missing" ]
+  [ ! -e "$REPO/packages/hello/linux-amd64" ]
+}
+
 @test "fetch leaves no temporary files behind" {
   export TMPDIR=$BATS_TEST_TMPDIR/tmp
   mkdir -p "$TMPDIR"
