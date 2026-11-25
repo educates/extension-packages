@@ -23,5 +23,8 @@ mkdir -p "$(dirname "$SETTINGS")"
 if [ ! -f "$SETTINGS" ]; then
   echo '{}' > "$SETTINGS"
 fi
-jq -s '.[0] + .[1]' "$SETTINGS" "$PACKAGE_DIR/settings.json" > "$SETTINGS.$$"
-mv "$SETTINGS.$$" "$SETTINGS"
+if ! jq -s '.[0] + .[1]' "$SETTINGS" "$PACKAGE_DIR/settings.json" > "$SETTINGS.tmp"; then
+  rm -f "$SETTINGS.tmp"
+  exit 1
+fi
+mv "$SETTINGS.tmp" "$SETTINGS"
