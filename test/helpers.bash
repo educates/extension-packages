@@ -102,6 +102,13 @@ recorded_deploys() {
   grep ' workshop deploy ' "$EDUCATES_CALLS" || true
 }
 
+# Prints the words the shell reads from a command line, one per line, as
+# it would pass them to the command.
+command_words() {
+  eval "set -- $1"
+  printf '%s\n' "$@"
+}
+
 # Prints the command of each terminal:execute action on a workshop page,
 # one per line, in page order.
 page_commands() {

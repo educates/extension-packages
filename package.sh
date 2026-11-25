@@ -491,14 +491,14 @@ cmd_try() {
   fi
   if [ "$cluster" = true ]; then
     educates cluster workshop deploy --file "$dir" --open-browser
-    echo "To delete the workshop: educates cluster workshop delete --file $dir"
+    printf 'To delete the workshop: educates cluster workshop delete --file %q\n' "$dir"
   else
     if [ -n "$delivery" ]; then
       deploy_flags+=(--package-delivery "$delivery")
     fi
     educates docker workshop deploy --file "$dir" \
       ${deploy_flags[@]+"${deploy_flags[@]}"}
-    echo "To delete the workshop: educates docker workshop delete --file $dir"
+    printf 'To delete the workshop: educates docker workshop delete --file %q\n' "$dir"
   fi
 }
 

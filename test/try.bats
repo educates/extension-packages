@@ -262,6 +262,21 @@ EOF
   [ "${lines[${#lines[@]} - 1]}" = "To delete the workshop: educates cluster workshop delete --file $dir" ]
 }
 
+@test "try prints a delete command that can be pasted as it is, for a path with a space" {
+  require_local_registry
+  stub_educates_deploy
+  local docker="$BATS_TEST_TMPDIR/docker workshop"
+  local cluster="$BATS_TEST_TMPDIR/cluster workshop"
+
+  run --separate-stderr "$SCRIPT" try --output "$docker" hello
+  [ "$status" -eq 0 ]
+  [ "$(command_words "${lines[${#lines[@]} - 1]#To delete the workshop: }")" = "$(printf '%s\n' educates docker workshop delete --file "$docker")" ]
+
+  run --separate-stderr "$SCRIPT" try --cluster --output "$cluster" hello
+  [ "$status" -eq 0 ]
+  [ "$(command_words "${lines[${#lines[@]} - 1]#To delete the workshop: }")" = "$(printf '%s\n' educates cluster workshop delete --file "$cluster")" ]
+}
+
 @test "try --no-deploy deploys nothing" {
   require_local_registry
   stub_educates_deploy
