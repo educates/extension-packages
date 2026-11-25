@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Fetches and publishes the extension packages under packages/.
+# Fetches and publishes the extension packages under packages/, and tries
+# them in a workshop generated for them.
 #
 # Runs with bash 3.2, as macOS ships it, and later, on macOS and Linux.
 # Besides the standard Unix tools it needs only educates and curl.
@@ -9,8 +10,19 @@ set -euo pipefail
 
 export LC_ALL=C
 
+# Bash 5.2 and later replace & in the replacement of ${var//pattern/string}
+# with the match, which render must not do.
+shopt -u patsub_replacement 2>/dev/null || true
+
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PACKAGES_DIR=$ROOT/packages
+
+# The template try generates its workshop from.
+TRY_TEMPLATE_DIR=$ROOT/try-workshop
+
+# The local registry, as educates local registry deploy runs it, which try
+# publishes to and the workshops it deploys resolve as $(image_repository).
+LOCAL_REGISTRY=localhost:5001
 
 # The reserved directories of a package source, and the directories under
 # them that a fetch script writes into. Nothing in a fetched directory is
@@ -23,7 +35,8 @@ usage() {
   cat <<'EOF'
 Usage: package.sh <command> [options] [<package>...]
 
-Each command acts on the packages named, or on every package when none is.
+Each command acts on the packages named, or on every package when none is,
+except try, which needs at least one.
 
 Commands:
   list [<package>...]
@@ -39,6 +52,16 @@ Commands:
       registry flags of educates package publish, such as
       --registry-username, --registry-password and --registry-insecure,
       are passed to it unchanged.
+
+  try [--cluster] [--package-delivery image-mount|fetch]
+      [--workshop-image IMAGE] [--output DIR] [--no-deploy] <package>...
+      Publish the packages to the local registry at localhost:5001,
+      generate a workshop for them in DIR, a new or empty directory, or in
+      a new temporary directory, and publish its content there. Then
+      deploy it with educates docker workshop deploy, passing it
+      --package-delivery, or with --cluster to the current cluster with
+      educates cluster workshop deploy. --workshop-image sets the
+      workshop's image. --no-deploy stops before deploying.
 EOF
 }
 
@@ -274,6 +297,178 @@ cmd_publish() {
   done
 }
 
+# The longest workshop name try gives. A cluster deploy renames the
+# workshop educates-cli--<name>-<7 hex digits>, and that name is a label
+# value, which is at most 63 characters.
+MAX_WORKSHOP_NAME=41
+
+# Prints the name of the workshop for the packages: try- followed by the
+# package names, joined by hyphens. A name too long is cut short and ends
+# with a hash of the whole name, so that it stays distinct.
+workshop_name() {
+  local name=try package hash
+  for package in "$@"; do
+    name=$name-$package
+  done
+  if [ ${#name} -gt $MAX_WORKSHOP_NAME ]; then
+    hash=$(printf '%s' "$name" | sha256_of -)
+    name=${name:0:$((MAX_WORKSHOP_NAME - 9))}-${hash:0:8}
+  fi
+  printf '%s\n' "$name"
+}
+
+# render TEMPLATE NAME=VALUE...
+#
+# Prints a file of the try workshop template with each @NAME@ in it
+# replaced by its VALUE, which may span lines. A line holding a token whose
+# value is empty is left out.
+render() {
+  local template=$TRY_TEMPLATE_DIR/$1 line pair token value
+  shift
+  while IFS= read -r line || [ -n "$line" ]; do
+    for pair in "$@"; do
+      token=@${pair%%=*}@
+      value=${pair#*=}
+      case $line in
+        *"$token"*)
+          [ -n "$value" ] || continue 2
+          line=${line//$token/$value}
+          ;;
+      esac
+    done
+    printf '%s\n' "$line"
+  done < "$template"
+}
+
+# write_workshop DIR WORKSHOP WORKSHOP_IMAGE <package>...
+#
+# Writes the workshop named WORKSHOP for the packages, in the order given,
+# into DIR. An empty WORKSHOP_IMAGE leaves the workshop image the
+# platform's default.
+write_workshop() {
+  local dir=$1 workshop=$2 workshop_image=$3
+  shift 3
+  local nl=$'\n'
+  local name version declarations="" sections=""
+
+  for name in "$@"; do
+    version=$(cd "$PACKAGES_DIR/$name" && manifest_version)
+    declarations=${declarations:+$declarations$nl}$(render workshop-package.yaml \
+      PACKAGE_NAME="$name" PACKAGE_VERSION="$version")
+    sections=${sections:+$sections$nl$nl}$(render packages-page-section.md \
+      PACKAGE_NAME="$name")
+  done
+
+  mkdir -p "$dir/resources" "$dir/workshop/content"
+  render workshop.yaml WORKSHOP_NAME="$workshop" \
+    WORKSHOP_IMAGE="$workshop_image" PACKAGE_NAMES="$(join_words "$@")" \
+    PACKAGES="$declarations" > "$dir/resources/workshop.yaml"
+  render packages-page.md PACKAGE_NAMES="$(join_words "$@")" \
+    PACKAGE_SECTIONS="$sections" > "$dir/workshop/content/00-packages.md"
+
+  # The workshop orders its pages by file name, so each validation page is
+  # numbered after the packages page.
+  local page=0
+  for name in "$@"; do
+    if [ -f "$PACKAGES_DIR/$name/workshop.md" ]; then
+      page=$((page + 1))
+      cp "$PACKAGES_DIR/$name/workshop.md" \
+        "$dir/workshop/content/$(printf '%02d' "$page")-$name.md"
+    fi
+  done
+}
+
+cmd_try() {
+  local deploy=true cluster=false delivery="" output="" workshop_image=""
+  local names=() deploy_flags=()
+  local selected workshop dir
+
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --no-deploy)
+        deploy=false
+        ;;
+      --cluster)
+        cluster=true
+        ;;
+      --package-delivery)
+        [ $# -ge 2 ] || usage_error "$1 needs a value"
+        delivery=$2
+        shift
+        ;;
+      --package-delivery=*)
+        delivery=${1#*=}
+        ;;
+      --workshop-image)
+        [ $# -ge 2 ] || usage_error "$1 needs a value"
+        workshop_image=$2
+        shift
+        ;;
+      --workshop-image=*)
+        workshop_image=${1#*=}
+        ;;
+      --output)
+        [ $# -ge 2 ] || usage_error "$1 needs a value"
+        output=$2
+        shift
+        ;;
+      --output=*)
+        output=${1#*=}
+        ;;
+      -*)
+        usage_error "unknown option $1"
+        ;;
+      *)
+        names+=("$1")
+        ;;
+    esac
+    shift
+  done
+
+  case $delivery in
+    "" | image-mount | fetch) ;;
+    *) usage_error "--package-delivery takes image-mount or fetch, not $delivery" ;;
+  esac
+  if [ "$cluster" = true ] && [ -n "$delivery" ]; then
+    usage_error "--package-delivery applies to a Docker deploy only, a cluster delivers packages as its EducatesClusterConfig sets"
+  fi
+  [ ${#names[@]} -gt 0 ] || usage_error "try needs at least one package"
+  selected=$(selected_names "${names[@]}" | sort -u)
+  if [ -n "$output" ] && [ -e "$output" ]; then
+    if [ ! -d "$output" ] || [ -n "$(ls -A "$output")" ]; then
+      echo "Error: $output is not an empty directory" >&2
+      return 1
+    fi
+  fi
+
+  cmd_publish --image-repository "$LOCAL_REGISTRY" $selected
+
+  # The workshop directory is kept, so that the workshop can be deleted
+  # with it after the run. A deploy names the workshop from the absolute
+  # path of its definition, so that is the path it is given.
+  workshop=$(workshop_name $selected)
+  dir=${output:-$(mktemp -d "${TMPDIR:-/tmp}/extension-packages-try.XXXXXX")}
+  write_workshop "$dir" "$workshop" "$workshop_image" $selected
+  dir=$(cd "$dir" && pwd)
+  educates workshop publish "$dir" --image-repository "$LOCAL_REGISTRY"
+  echo "Workshop $workshop written to $dir."
+
+  if [ "$deploy" = false ]; then
+    return 0
+  fi
+  if [ "$cluster" = true ]; then
+    educates cluster workshop deploy --file "$dir" --open-browser
+    echo "To delete the workshop: educates cluster workshop delete --file $dir"
+  else
+    if [ -n "$delivery" ]; then
+      deploy_flags+=(--package-delivery "$delivery")
+    fi
+    educates docker workshop deploy --file "$dir" \
+      ${deploy_flags[@]+"${deploy_flags[@]}"}
+    echo "To delete the workshop: educates docker workshop delete --file $dir"
+  fi
+}
+
 main() {
   local command=${1:-}
   case $command in
@@ -288,6 +483,10 @@ main() {
     publish)
       shift
       cmd_publish "$@"
+      ;;
+    try)
+      shift
+      cmd_try "$@"
       ;;
     -h | --help | help)
       usage

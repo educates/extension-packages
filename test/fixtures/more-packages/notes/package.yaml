@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: notes
+version: 2.0.0
+description: A fixture package with no programs and a validation page.

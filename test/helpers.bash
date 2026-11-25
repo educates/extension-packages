@@ -21,6 +21,7 @@ setup_scratch_repo() {
 
   mkdir -p "$REPO"
   cp "$REPO_ROOT/package.sh" "$SCRIPT"
+  cp -R "$REPO_ROOT/try-workshop" "$REPO/try-workshop"
   cp -R "$FIXTURES/packages" "$REPO/packages"
 
   UPSTREAM=$BATS_TEST_TMPDIR/upstream
@@ -33,12 +34,78 @@ setup_scratch_repo() {
   TEST_REPOSITORY=$TEST_REGISTRY/$TEST_NAMESPACE
 }
 
+# add_fixture_package FIXTURE [NAME]
+#
+# Adds a package from test/fixtures/more-packages to the scratch
+# repository's packages, as NAME when given, which its manifest then names.
+add_fixture_package() {
+  local name=${2:-$1}
+  local manifest=$REPO/packages/$name/package.yaml
+  cp -R "$FIXTURES/more-packages/$1" "$REPO/packages/$name"
+  sed "s/^name: .*/name: $name/" "$FIXTURES/more-packages/$1/package.yaml" > "$manifest"
+}
+
+# Prints the name of the workshop generated in a directory.
+generated_workshop_name() {
+  sed -n 's/^  name: "\(.*\)"$/\1/p' "$1/resources/workshop.yaml"
+}
+
+# Prints the package declarations of a workshop definition.
+declared_packages() {
+  sed -n '/^    packages:$/,/^  [a-z]/{/^    - /p;/^      /p;}' "$1"
+}
+
 # Fails the test unless the test registry answers.
 require_registry() {
   if ! curl -fsS -o /dev/null "http://$TEST_REGISTRY/v2/"; then
     echo "No registry answers at $TEST_REGISTRY: start one, or set TEST_REGISTRY." >&2
     return 1
   fi
+}
+
+# The local registry try always publishes to, whatever TEST_REGISTRY names.
+# The try tests leave the fixture packages and their workshops' content
+# there, under the names try gives them.
+LOCAL_REGISTRY=localhost:5001
+
+# Fails the test unless the local registry answers.
+require_local_registry() {
+  if ! curl -fsS -o /dev/null "http://$LOCAL_REGISTRY/v2/"; then
+    echo "No registry answers at $LOCAL_REGISTRY, where try publishes: run educates local registry deploy." >&2
+    return 1
+  fi
+}
+
+# Puts a stand-in for educates first on PATH, which records the arguments
+# of each call in $EDUCATES_CALLS, one call per line. It deploys nothing:
+# a docker or cluster workshop deploy is only recorded, and every other
+# command is passed to the real educates.
+stub_educates_deploy() {
+  local real stub_dir=$BATS_TEST_TMPDIR/stub
+  real=$(command -v educates)
+  EDUCATES_CALLS=$BATS_TEST_TMPDIR/educates-calls
+  mkdir -p "$stub_dir"
+  cat > "$stub_dir/educates" <<EOF
+#!/bin/sh
+echo "\$*" >> '$EDUCATES_CALLS'
+case "\$1 \$2 \$3" in
+  "docker workshop deploy" | "cluster workshop deploy") exit 0 ;;
+esac
+exec '$real' "\$@"
+EOF
+  chmod 0755 "$stub_dir/educates"
+  PATH=$stub_dir:$PATH
+}
+
+# Prints the deploys the stand-in for educates recorded.
+recorded_deploys() {
+  grep ' workshop deploy ' "$EDUCATES_CALLS" || true
+}
+
+# Prints the command of each terminal:execute action on a workshop page,
+# one per line, in page order.
+page_commands() {
+  sed -n '/^command: |-$/{n;s/^  //;p;}' "$1"
 }
 
 # Prints the value of the `Digest:` line in the output of a publish.

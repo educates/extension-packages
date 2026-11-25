@@ -57,7 +57,7 @@ setup() {
 
 @test "an unknown option fails with the usage" {
   local command
-  for command in list fetch publish; do
+  for command in list fetch publish try; do
     run "$SCRIPT" "$command" --bogus hello
 
     [ "$status" -ne 0 ]
