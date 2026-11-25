@@ -28,8 +28,8 @@ dir=$2
 work=$(mktemp -d "${TMPDIR:-/tmp}/install-educates.XXXXXX")
 trap 'rm -rf "$work"' EXIT
 
-# download URL FILE
-download() {
+# download_file URL FILE
+download_file() {
   if ! curl -fsSL --retry 3 -o "$2" "$1"; then
     echo "Error: unable to download $1" >&2
     return 1
@@ -48,14 +48,14 @@ sha256_of() {
   printf '%s\n' "${sum%% *}"
 }
 
-download "$RELEASES_URL/$version/checksums.txt" "$work/checksums.txt"
+download_file "$RELEASES_URL/$version/checksums.txt" "$work/checksums.txt"
 expected=$(awk -v asset="$ASSET" '$2 == asset { print $1 }' "$work/checksums.txt")
 if [ -z "$expected" ]; then
   echo "Error: the checksums.txt of release $version has no line for $ASSET" >&2
   exit 1
 fi
 
-download "$RELEASES_URL/$version/$ASSET" "$work/$ASSET"
+download_file "$RELEASES_URL/$version/$ASSET" "$work/$ASSET"
 actual=$(sha256_of "$work/$ASSET")
 if [ "$actual" != "$expected" ]; then
   echo "Error: $ASSET of release $version has sha256 $actual, expected $expected" >&2
