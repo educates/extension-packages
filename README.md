@@ -17,6 +17,7 @@ with the `files` form.
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
 | [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
 | [github](packages/github/README.md) | `ghcr.io/educates/extension-packages/github:2.74.2` | The GitHub command line tool, gh, with bash completion. |
+| [toolhive](packages/toolhive/README.md) | `ghcr.io/educates/extension-packages/toolhive:0.1.7` | The ToolHive command line tool for MCP servers, thv, with bash completion. |
 
 ## Using a package
 
