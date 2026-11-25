@@ -15,6 +15,7 @@ with the `files` form.
 | Package | Reference | Description |
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [vscode-java-tools](packages/vscode-java-tools/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools:0.29.2` | The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor. |
 
 ## Using a package
 
