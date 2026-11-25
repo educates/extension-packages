@@ -22,11 +22,11 @@ unpack_extension() {
   rm -rf "$vsix.unpacked" "$vsix"
 }
 
-# vscjava NAME VERSION SHA256
+# unpack_vscjava_extension NAME VERSION SHA256
 #
-# Downloads the vscjava extension NAME from open-vsx and unpacks it into
-# common.
-vscjava() {
+# Downloads the vscjava extension NAME at VERSION from open-vsx and unpacks
+# it into common.
+unpack_vscjava_extension() {
   local vsix=vscjava.$1-$2.vsix
   download "https://open-vsx.org/api/vscjava/$1/$2/file/$vsix" "$3" \
     "$DOWNLOADS/$vsix"
@@ -47,17 +47,17 @@ download "$redhat_java/java-linux-arm64-1.42.0-561.vsix" \
 unpack_extension "$DOWNLOADS/redhat.java-linux-arm64.vsix" \
   linux-arm64/extensions/redhat.java-1.42.0
 
-vscjava vscode-java-debug 0.58.2 \
+unpack_vscjava_extension vscode-java-debug 0.58.2 \
   1dc2a6c87abc9a4309c65bffb44952ba1e95b70a30d16058a38f37b142ca64b2
-vscjava vscode-java-test 0.43.1 \
+unpack_vscjava_extension vscode-java-test 0.43.1 \
   16f091b1683cd07845671727b4b1332092660887f08b6af5c76225bfdc071f07
-vscjava vscode-maven 0.44.0 \
+unpack_vscjava_extension vscode-maven 0.44.0 \
   e42b9eb56fe46d619ae81b766d61f291d04685ded8e3e999603f923299d5890c
-vscjava vscode-gradle 3.15.0 \
+unpack_vscjava_extension vscode-gradle 3.15.0 \
   fda5ffe9d783faf5c5d8317a57fb978e2d3fd00d235e44c01917ab9900e3a4d2
-vscjava vscode-java-dependency 0.24.1 \
+unpack_vscjava_extension vscode-java-dependency 0.24.1 \
   2ce3dbb53c30184a80832357d9d31f994bc851a5371a5e375c21b0c92bd877bb
-vscjava vscode-java-pack "$version" \
+unpack_vscjava_extension vscode-java-pack "$version" \
   a808f61a13846e11d45a249ca967d2396939bdd66f40f268960b21a1d3faaec0
 
 # The setup script copies every unpacked directory and adds the entries of
