@@ -4,7 +4,7 @@
 # them in a workshop generated for them.
 #
 # Runs with bash 3.2, as macOS ships it, and later, on macOS and Linux.
-# Besides the standard Unix tools it needs only educates and curl.
+# Besides the standard Unix tools it needs only educates, curl and unzip.
 
 set -euo pipefail
 
@@ -164,7 +164,22 @@ extract_tar() {
   chmod "$mode" "$target"
 }
 
-FETCH_HELPERS="manifest_version sha256_of download install_file extract_tar"
+# unpack_zip ARCHIVE DIR
+#
+# Unpacks the whole zip archive ARCHIVE into DIR, creating DIR, and gives
+# each directory under DIR mode 0755 and each file 0755 when it has any
+# execute bit and 0644 otherwise, whatever modes the archive recorded.
+unpack_zip() {
+  local archive=$1 dir=$2
+  mkdir -p "$dir" || return 1
+  if ! unzip -q -o "$archive" -d "$dir"; then
+    echo "Error: unable to unpack $archive" >&2
+    return 1
+  fi
+  chmod -R u=rwX,go=rX "$dir"
+}
+
+FETCH_HELPERS="manifest_version sha256_of download install_file extract_tar unpack_zip"
 
 # Prints the name of every package: each directory under packages/ that
 # holds a package.yaml, in name order.
