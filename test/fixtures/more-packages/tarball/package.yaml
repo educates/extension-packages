@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: tarball
+version: 1.0.0
+description: A fixture package whose program comes from a tar archive.

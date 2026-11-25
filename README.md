@@ -15,6 +15,9 @@ with the `files` form.
 | Package | Reference | Description |
 |---|---|---|
 | [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
+| [github](packages/github/README.md) | `ghcr.io/educates/extension-packages/github:2.74.2` | The GitHub command line tool, gh, with bash completion. |
+| [toolhive](packages/toolhive/README.md) | `ghcr.io/educates/extension-packages/toolhive:0.1.7` | The ToolHive command line tool for MCP servers, thv, with bash completion. |
 | [vscode-continue-dev](packages/vscode-continue-dev/README.md) | `ghcr.io/educates/extension-packages/vscode-continue-dev:1.1.63` | The Continue AI code assistant extension, installed in the workshop editor, with model and MCP server configuration. |
 | [vscode-java-tools](packages/vscode-java-tools/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools:0.29.2` | The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor. |
 | [vscode-roo-code](packages/vscode-roo-code/README.md) | `ghcr.io/educates/extension-packages/vscode-roo-code:3.22.5` | The Roo Code AI coding agent extension, installed in the workshop editor. |
@@ -191,6 +194,11 @@ and these helpers defined:
 - `install_file SOURCE TARGET MODE` copies `SOURCE` to `TARGET`, creating
   its directory, and gives it `MODE`: 0755 for a program, 0644 for any
   other file.
+- `extract_tar ARCHIVE MEMBER TARGET MODE` extracts the file `MEMBER`, its
+  path inside the tar archive `ARCHIVE`, to `TARGET` with `MODE`, as
+  `install_file` does, and writes nothing else from the archive. It reads
+  any archive `tar` recognizes, compressed or not, with bsdtar on macOS
+  and GNU tar on Linux.
 
 `$DOWNLOADS` names an empty directory for the downloads, which is removed
 afterwards. A fetch script takes the version from the manifest, so a new
