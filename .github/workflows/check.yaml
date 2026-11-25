@@ -1,7 +1,8 @@
 name: Check
 
-# Checks a pull request: the bats suite, then a publish dry run of each
-# package in a job of its own.
+# Checks a pull request: the bats suite, and a publish dry run of each
+# package in a job of its own. The dry runs don't wait for the suite, so
+# the tests and each package report on their own.
 
 on:
   pull_request:
@@ -59,7 +60,7 @@ jobs:
 
   dry-run:
     name: Dry run ${{ matrix.package }}
-    needs: [test, packages]
+    needs: packages
     if: needs.packages.outputs.packages != '[]'
     runs-on: ubuntu-24.04
     strategy:

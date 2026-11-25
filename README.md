@@ -261,12 +261,14 @@ GitHub Actions checks every pull request and publishes every push to
 `main`, running the same package script a maintainer runs.
 
 On a pull request, the Check workflow runs the bats suite against a
-`registry:2` service container. Then, for each package `./package.sh list`
-prints, a job of its own runs `./package.sh publish --dry-run` with the
-image repository `ghcr.io/educates/extension-packages`, which downloads the
-package's upstream files, validates its layout and prints the digests a
-publish would give. These jobs don't cancel each other, so a failing job
-names its package and the others still report.
+`registry:2` service container. Alongside it, for each package
+`./package.sh list` prints, a job of its own runs
+`./package.sh publish --dry-run` with the image repository
+`ghcr.io/educates/extension-packages`, which downloads the package's
+upstream files, validates its layout and prints the digests a publish
+would give. The dry runs don't wait for the suite, and don't cancel each
+other, so the suite and each package report on their own, and a failing
+job names its package.
 
 On a push to `main`, the Publish workflow publishes each package in a job
 of its own as `ghcr.io/educates/extension-packages/<name>:<version>`. It
