@@ -188,6 +188,11 @@ and these helpers defined:
 - `install_file SOURCE TARGET MODE` copies `SOURCE` to `TARGET`, creating
   its directory, and gives it `MODE`: 0755 for a program, 0644 for any
   other file.
+- `extract_tar ARCHIVE MEMBER TARGET MODE` extracts the file `MEMBER`, its
+  path inside the tar archive `ARCHIVE`, to `TARGET` with `MODE`, as
+  `install_file` does, and writes nothing else from the archive. It reads
+  any archive `tar` recognizes, compressed or not, with bsdtar on macOS
+  and GNU tar on Linux.
 
 `$DOWNLOADS` names an empty directory for the downloads, which is removed
 afterwards. A fetch script takes the version from the manifest, so a new
