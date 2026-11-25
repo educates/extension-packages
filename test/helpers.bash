@@ -26,6 +26,79 @@ setup_scratch_repo() {
   UPSTREAM=$BATS_TEST_TMPDIR/upstream
   cp -R "$FIXTURES/upstream" "$UPSTREAM"
   export FIXTURE_UPSTREAM=file://$UPSTREAM
+
+  # A repository of its own in the test registry for each test, since the
+  # registry may not allow deleting what a test pushed.
+  TEST_NAMESPACE=extension-packages-test/$(date +%Y%m%d%H%M%S)-$$-$RANDOM
+  TEST_REPOSITORY=$TEST_REGISTRY/$TEST_NAMESPACE
+}
+
+# Fails the test unless the test registry answers.
+require_registry() {
+  if ! curl -fsS -o /dev/null "http://$TEST_REGISTRY/v2/"; then
+    echo "No registry answers at $TEST_REGISTRY: start one, or set TEST_REGISTRY." >&2
+    return 1
+  fi
+}
+
+# Prints the value of the `Digest:` line in the output of a publish.
+published_digest() {
+  printf '%s\n' "$1" | sed -n 's/^Digest: //p'
+}
+
+# registry_get PATH ACCEPT
+#
+# Prints what the test registry serves at /v2/<PATH>.
+registry_get() {
+  curl -fsSL -H "Accept: $2" "http://$TEST_REGISTRY/v2/$1"
+}
+
+# registry_digest NAME TAG
+#
+# Prints the digest the test registry holds for <namespace>/NAME:TAG.
+registry_digest() {
+  curl -fsSI -H 'Accept: application/vnd.oci.image.index.v1+json' \
+    "http://$TEST_REGISTRY/v2/$TEST_NAMESPACE/$1/manifests/$2" |
+    tr -d '\r' | sed -n 's/^[Dd]ocker-[Cc]ontent-[Dd]igest: //p'
+}
+
+# Prints the image index for <namespace>/NAME:TAG.
+registry_index() {
+  registry_get "$TEST_NAMESPACE/$1/manifests/$2" application/vnd.oci.image.index.v1+json
+}
+
+# platform_digest INDEX ARCH
+#
+# Prints the digest of the linux/ARCH child in an image index.
+platform_digest() {
+  printf '%s' "$1" |
+    grep -o '"digest":"sha256:[0-9a-f]*","platform":{"architecture":"'"$2"'","os":"linux"' |
+    grep -o 'sha256:[0-9a-f]*'
+}
+
+# layer_blob NAME CHILD_DIGEST
+#
+# Writes the single layer of a child image of <namespace>/NAME to stdout.
+layer_blob() {
+  local manifest layer
+  manifest=$(registry_get "$TEST_NAMESPACE/$1/manifests/$2" application/vnd.oci.image.manifest.v1+json)
+  layer=$(printf '%s' "$manifest" | grep -o '"layers":\[{[^}]*}' | grep -o 'sha256:[0-9a-f]*')
+  registry_get "$TEST_NAMESPACE/$1/blobs/$layer" application/octet-stream
+}
+
+# layer_listing NAME CHILD_DIGEST
+#
+# Lists a child image's files as `<mode string> <path>` lines, in layer
+# order.
+layer_listing() {
+  layer_blob "$1" "$2" | tar -tvzf - | awk '{print $1, $NF}'
+}
+
+# layer_file NAME CHILD_DIGEST PATH
+#
+# Prints one file from a child image.
+layer_file() {
+  layer_blob "$1" "$2" | tar -xzOf - "$3"
 }
 
 # Lists the files under a directory, one `<mode> <path>` line each, with

@@ -2,8 +2,8 @@
 
 # Fetches and publishes the extension packages under packages/.
 #
-# Runs on bash 3.2 (macOS) and later, and needs only educates, curl, tar
-# and unzip besides.
+# Runs with bash 3.2, as macOS ships it, and later, on macOS and Linux.
+# Besides the standard Unix tools it needs only educates and curl.
 
 set -euo pipefail
 
@@ -23,10 +23,30 @@ usage() {
   cat <<'EOF'
 Usage: package.sh <command> [options] [<package>...]
 
+Each command acts on the packages named, or on every package when none is.
+
 Commands:
-  list       print the package names, one per line
-  fetch      download each package's files with its fetch script
+  list [<package>...]
+      Print the package names, one per line.
+
+  fetch [<package>...]
+      Empty each package's fetched directories and run its fetch script.
+
+  publish [--dry-run] [--image-repository REPO] [registry flags] [<package>...]
+      Fetch each package and publish it with educates package publish as
+      REPO/<name>:<version>. REPO defaults to localhost:5001. --dry-run
+      validates and prints the digests without contacting a registry. The
+      registry flags of educates package publish, such as
+      --registry-username, --registry-password and --registry-insecure,
+      are passed to it unchanged.
 EOF
+}
+
+usage_error() {
+  echo "Error: $1" >&2
+  echo >&2
+  usage >&2
+  exit 1
 }
 
 # A temporary directory for the whole run, created by ensure_work_dir and
@@ -116,7 +136,7 @@ package_names() {
 }
 
 cmd_list() {
-  package_names
+  selected_names "$@"
 }
 
 # Prints the package names given, or every package's name when none is.
@@ -125,10 +145,15 @@ selected_names() {
   local all name known
   all=$(package_names)
   if [ $# -eq 0 ]; then
-    printf '%s\n' "$all"
+    if [ -n "$all" ]; then
+      printf '%s\n' "$all"
+    fi
     return 0
   fi
   for name in "$@"; do
+    case $name in
+      -*) usage_error "unknown option $name" ;;
+    esac
     for known in $all; do
       if [ "$name" = "$known" ]; then
         continue 2
@@ -201,6 +226,54 @@ cmd_fetch() {
   done
 }
 
+cmd_publish() {
+  local image_repository=localhost:5001
+  local publish_flags=() names=()
+  local selected name
+
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --dry-run)
+        publish_flags+=("$1")
+        ;;
+      --image-repository)
+        [ $# -ge 2 ] || usage_error "$1 needs a value"
+        image_repository=$2
+        shift
+        ;;
+      --image-repository=*)
+        image_repository=${1#*=}
+        ;;
+      # The registry flags of educates package publish, passed through.
+      --registry-*=* | --registry-anon | --registry-insecure | --registry-verify-certs)
+        publish_flags+=("$1")
+        ;;
+      --registry-ca-cert-path | --registry-password | \
+        --registry-response-header-timeout | --registry-retry-count | \
+        --registry-token | --registry-username)
+        [ $# -ge 2 ] || usage_error "$1 needs a value"
+        publish_flags+=("$1" "$2")
+        shift
+        ;;
+      -*)
+        usage_error "unknown option $1"
+        ;;
+      *)
+        names+=("$1")
+        ;;
+    esac
+    shift
+  done
+
+  selected=$(selected_names ${names[@]+"${names[@]}"})
+  for name in $selected; do
+    fetch_package "$name"
+    educates package publish "$PACKAGES_DIR/$name" \
+      --image-repository "$image_repository" \
+      ${publish_flags[@]+"${publish_flags[@]}"}
+  done
+}
+
 main() {
   local command=${1:-}
   case $command in
@@ -212,12 +285,19 @@ main() {
       shift
       cmd_fetch "$@"
       ;;
+    publish)
+      shift
+      cmd_publish "$@"
+      ;;
     -h | --help | help)
       usage
       ;;
-    *)
+    "")
       usage >&2
       exit 1
+      ;;
+    *)
+      usage_error "unknown command \"$command\""
       ;;
   esac
 }
