@@ -156,3 +156,47 @@ bats test
 The publish tests push to the registry `TEST_REGISTRY` names,
 `localhost:5001` by default, under a new repository for each test. Run
 `educates local registry deploy` first to start that registry.
+
+## Continuous integration
+
+GitHub Actions checks every pull request and publishes every push to
+`main`, running the same package script a maintainer runs.
+
+On a pull request, the Check workflow runs the bats suite against a
+`registry:2` service container. Then, for each package `./package.sh list`
+prints, a job of its own runs `./package.sh publish --dry-run` with the
+image repository `ghcr.io/educates/extension-packages`, which downloads the
+package's upstream files, validates its layout and prints the digests a
+publish would give. These jobs don't cancel each other, so a failing job
+names its package and the others still report.
+
+On a push to `main`, the Publish workflow publishes each package in a job
+of its own as `ghcr.io/educates/extension-packages/<name>:<version>`. It
+logs in with the workflow's own `GITHUB_TOKEN`, granted `packages: write`,
+so publishing needs no stored secret, and GitHub links each package the
+workflow creates to this repository. One publish run happens at a time.
+Every run publishes every package: an unchanged package pushes an
+identical image index, so its tag keeps its digest, and only a changed
+package gets a new one.
+
+Don't push a package to `ghcr.io/educates/extension-packages` by hand
+before the workflow has published it: GitHub then doesn't link the package
+to this repository, and the workflow's token can't push to it. After a new
+package's first publish, check its visibility in its settings on GitHub
+and make it public if it isn't, so that workshops pull it without
+credentials.
+
+### The educates CLI version
+
+CI installs the `educates` CLI from the `educates-linux-amd64` asset of an
+educates-training-platform release. The script that installs it,
+`.github/actions/install-educates/install.sh`, checks the download against
+the release's `checksums.txt`, and `test/install-educates.bats` tests it.
+The release is set in one place, `EDUCATES_VERSION` in
+`.github/actions/install-educates/action.yml`.
+
+A package's digests depend on the CLI build that publishes it, so a new
+CLI version can give every package a new digest though no package changed,
+and the first publish with it then moves every tag. Bump the version in a
+pull request of its own, and say in its description that every package's
+digest may change when it merges.
