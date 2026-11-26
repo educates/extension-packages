@@ -10,6 +10,12 @@ linux/amd64 and linux/arm64.
   a setup script writes the completion to
   `~/.local/share/gh/completion.bash` and adds one line sourcing it to
   `~/.bashrc`.
+- `gh`'s telemetry turned off. Since version 2.91, `gh` sends pseudonymous
+  usage data unless told not to. When the session starts, a setup script
+  sets `GH_TELEMETRY=false` in the session's environment, which every
+  terminal inherits. A workshop that wants the telemetry on sets
+  `GH_TELEMETRY` in a setup script of its own, which runs after the
+  package's.
 
 The package holds only `gh`, not the manual pages that its release archive
 also carries.

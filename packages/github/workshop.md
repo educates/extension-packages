@@ -3,7 +3,7 @@ title: github
 ---
 
 The github package puts the GitHub CLI, `gh`, on `PATH`, and sets up its
-bash completion when the session starts.
+bash completion and turns off its telemetry when the session starts.
 
 ## Running the tool
 
@@ -16,6 +16,15 @@ command: |-
 
 The first line should be `gh version 2.106.0`, followed by the release
 date.
+
+Check that the package turned off `gh`'s telemetry:
+
+```terminal:execute
+command: |-
+  echo "GH_TELEMETRY=$GH_TELEMETRY"
+```
+
+It should print `GH_TELEMETRY=false`.
 
 ## Completion in a new terminal
 
