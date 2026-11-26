@@ -18,6 +18,7 @@ with the `files` form.
 | [chainloop](packages/chainloop/README.md) | `ghcr.io/educates/extension-packages/chainloop:1.89.8` | The Chainloop command line tool, chainloop, with bash completion. |
 | [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
 | [github](packages/github/README.md) | `ghcr.io/educates/extension-packages/github:2.74.2` | The GitHub command line tool, gh, with bash completion. |
+| [helm](packages/helm/README.md) | `ghcr.io/educates/extension-packages/helm:4.3.2` | The Helm package manager for Kubernetes, helm, with bash completion. |
 | [toolhive](packages/toolhive/README.md) | `ghcr.io/educates/extension-packages/toolhive:0.1.7` | The ToolHive command line tool for MCP servers, thv, with bash completion. |
 | [vcluster](packages/vcluster/README.md) | `ghcr.io/educates/extension-packages/vcluster:0.30.3` | The vCluster command line tool, vcluster, with bash completion. |
 | [vscode-continue-dev](packages/vscode-continue-dev/README.md) | `ghcr.io/educates/extension-packages/vscode-continue-dev:1.1.63` | The Continue AI code assistant extension, installed in the workshop editor, with model and MCP server configuration. |
