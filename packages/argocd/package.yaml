@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: argocd
+version: 3.6.3
+description: The Argo CD command line tool, argocd, with bash completion.

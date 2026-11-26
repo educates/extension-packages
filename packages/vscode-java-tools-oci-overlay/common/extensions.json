@@ -1,0 +1,123 @@
+[
+    {
+      "identifier": {
+        "id": "redhat.java"
+      },
+      "version": "1.58.0",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/redhat.java-1.58.0",
+        "scheme": "file"
+      },
+      "relativeLocation": "redhat.java-1.58.0",
+      "metadata": {
+        "installedTimestamp": 1795684807315,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-debug"
+      },
+      "version": "0.60.0",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-debug-0.60.0",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-java-debug-0.60.0",
+      "metadata": {
+        "installedTimestamp": 1795684808436,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-test"
+      },
+      "version": "0.47.0",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-test-0.47.0",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-java-test-0.47.0",
+      "metadata": {
+        "installedTimestamp": 1795684808669,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-maven"
+      },
+      "version": "0.45.3",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-maven-0.45.3",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-maven-0.45.3",
+      "metadata": {
+        "installedTimestamp": 1795684808928,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-gradle"
+      },
+      "version": "3.18.0",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-gradle-3.18.0",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-gradle-3.18.0",
+      "metadata": {
+        "installedTimestamp": 1795684809226,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-dependency"
+      },
+      "version": "0.27.7",
+      "location": {
+        "$mid": 1,
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-dependency-0.27.7",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-java-dependency-0.27.7",
+      "metadata": {
+        "installedTimestamp": 1795684809663,
+        "pinned": true,
+        "source": "vsix"
+      }
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-pack"
+      },
+      "version": "0.31.2",
+      "location": {
+        "$mid": 1,
+        "fsPath": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
+        "external": "file:///home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
+        "scheme": "file"
+      },
+      "relativeLocation": "vscjava.vscode-java-pack-0.31.2",
+      "metadata": {
+        "installedTimestamp": 1795684809951,
+        "pinned": true,
+        "source": "vsix"
+      }
+    }
+]

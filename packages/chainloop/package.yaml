@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: chainloop
+version: 1.138.0
+description: The Chainloop command line tool, chainloop, with bash completion.

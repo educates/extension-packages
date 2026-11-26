@@ -1,0 +1,66 @@
+name: Publish
+
+# Publishes each package to ghcr.io/educates/extension-packages, in a job of
+# its own, on every push to main. An unchanged package publishes an
+# identical image index, so its tag keeps its digest.
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+# One publish run at a time. A run started while another is in progress
+# waits for it, and a later run replaces the one waiting, so the latest
+# commit on main is the one published.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  packages:
+    name: Packages
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      packages: ${{ steps.list.outputs.packages }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: List the packages
+        id: list
+        run: echo "packages=$(./package.sh list | jq -Rnc '[inputs]')" >> "$GITHUB_OUTPUT"
+
+  publish:
+    name: Publish ${{ matrix.package }}
+    needs: packages
+    if: needs.packages.outputs.packages != '[]'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.packages.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/install-educates
+
+      # educates package publish reads the Docker credentials.
+      - name: Log in to the GitHub Container Registry
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: printf '%s\n' "$GITHUB_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+
+      - name: Fetch and publish the package
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: ./package.sh publish --image-repository ghcr.io/educates/extension-packages "$PACKAGE"

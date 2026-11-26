@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: zipped
+version: 1.0.0
+description: A fixture package whose fetch script unpacks a zip archive.

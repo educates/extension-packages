@@ -1,0 +1,5 @@
+apiVersion: packages.educates.dev/v1alpha1
+kind: ExtensionPackage
+name: vscode-java-tools-oci-overlay
+version: 0.31.2
+description: The Extension Pack for Java for the workshop editor, unpacked ahead of time and copied into place without installing it, for a faster start.

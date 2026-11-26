@@ -1,0 +1,3 @@
+    - name: @PACKAGE_NAME@
+      image: "$(image_repository)/@PACKAGE_NAME@:@PACKAGE_VERSION@"
+      imagePullPolicy: Always
