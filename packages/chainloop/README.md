@@ -1,7 +1,7 @@
 # chainloop
 
 The [Chainloop](https://chainloop.dev/) command line tool, `chainloop`,
-version 1.89.8, for linux/amd64 and linux/arm64.
+version 1.138.0, for linux/amd64 and linux/arm64.
 
 ## What it provides
 
@@ -16,7 +16,7 @@ The package holds only the command line tool. A workshop that uses it
 against a Chainloop control plane sets up the account or API token itself.
 
 Before it runs most commands, `chainloop` contacts its control plane, by
-default `api.cp.chainloop.dev`, and it waits about 20 seconds when the
+default `cp.chainloop.dev`, and it waits about 20 seconds when the
 session's network drops that traffic. Completing a command line with Tab
 runs `chainloop` too, so in a session that can't reach the control plane,
 both commands and completion are slow.
@@ -31,5 +31,5 @@ spec:
   workshop:
     packages:
     - name: chainloop
-      image: ghcr.io/educates/extension-packages/chainloop:1.89.8
+      image: ghcr.io/educates/extension-packages/chainloop:1.138.0
 ```

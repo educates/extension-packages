@@ -14,7 +14,7 @@ command: |-
   chainloop version
 ```
 
-The client version should be `1.89.8`. The server version is that of the
+The client version should be `1.138.0`. The server version is that of the
 Chainloop control plane, or `unknown` when the session can't reach it.
 
 ## Completion in a new terminal
