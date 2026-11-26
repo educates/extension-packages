@@ -14,7 +14,7 @@ with the `files` form.
 
 | Package | Reference | Description |
 |---|---|---|
-| [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:2.10.6` | The Argo CD command line tool, argocd, with bash completion. |
+| [argocd](packages/argocd/README.md) | `ghcr.io/educates/extension-packages/argocd:3.6.3` | The Argo CD command line tool, argocd, with bash completion. |
 | [chainloop](packages/chainloop/README.md) | `ghcr.io/educates/extension-packages/chainloop:1.89.8` | The Chainloop command line tool, chainloop, with bash completion. |
 | [crane](packages/crane/README.md) | `ghcr.io/educates/extension-packages/crane:0.19.1` | The crane command line tool for container registries, with bash completion. |
 | [github](packages/github/README.md) | `ghcr.io/educates/extension-packages/github:2.74.2` | The GitHub command line tool, gh, with bash completion. |
@@ -34,7 +34,7 @@ spec:
   workshop:
     packages:
     - name: argocd
-      image: ghcr.io/educates/extension-packages/argocd:2.10.6
+      image: ghcr.io/educates/extension-packages/argocd:3.6.3
 ```
 
 A package's programs are on `PATH` in every terminal, and its setup
@@ -252,7 +252,8 @@ manifest:
 
 - the sha256 of each download, recorded in `fetch.sh`;
 - the package's reference, `<name>:<version>`, in its README and in its
-  row of the [Packages](#packages) table;
+  row of the [Packages](#packages) table, and for argocd also in the
+  example under [Using a package](#using-a-package);
 - the package's validation page, where it checks the version a program
   prints.
 

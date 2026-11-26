@@ -14,7 +14,7 @@ command: |-
   argocd version --client
 ```
 
-The version should start with `v2.10.6`.
+The version should start with `v3.6.3`.
 
 ## Completion in a new terminal
 

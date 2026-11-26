@@ -1,7 +1,7 @@
 # argocd
 
 The [Argo CD](https://argo-cd.readthedocs.io/) command line tool,
-`argocd`, version 2.10.6, for linux/amd64 and linux/arm64.
+`argocd`, version 3.6.3, for linux/amd64 and linux/arm64.
 
 ## What it provides
 
@@ -24,5 +24,5 @@ spec:
   workshop:
     packages:
     - name: argocd
-      image: ghcr.io/educates/extension-packages/argocd:2.10.6
+      image: ghcr.io/educates/extension-packages/argocd:3.6.3
 ```

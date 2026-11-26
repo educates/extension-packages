@@ -8,11 +8,11 @@ version=$(manifest_version)
 release=https://github.com/argoproj/argo-cd/releases/download/v$version
 
 download "$release/argocd-linux-amd64" \
-  39758d449ea4d1ccc5e863dccc7658b6122095758c7064b6b6606d02c4f8f549 \
+  3750cd7ed2a2ef05c640344b86f29aa99c9783e847c8f326c81e3900ad39412b \
   "$DOWNLOADS/argocd-linux-amd64"
 install_file "$DOWNLOADS/argocd-linux-amd64" linux-amd64/bin/argocd 0755
 
 download "$release/argocd-linux-arm64" \
-  5783392eb607448013a973d2f047365ea16f654773f1f033339fc745a13d95b4 \
+  04a7b681d6c5eec193159705c5556114f8cba98abada4c17c3991124065e1964 \
   "$DOWNLOADS/argocd-linux-arm64"
 install_file "$DOWNLOADS/argocd-linux-arm64" linux-arm64/bin/argocd 0755
