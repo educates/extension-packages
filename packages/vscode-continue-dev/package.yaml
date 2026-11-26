@@ -1,5 +1,0 @@
-apiVersion: packages.educates.dev/v1alpha1
-kind: ExtensionPackage
-name: vscode-continue-dev
-version: 1.1.63
-description: The Continue AI code assistant extension, installed in the workshop editor, with model and MCP server configuration.
