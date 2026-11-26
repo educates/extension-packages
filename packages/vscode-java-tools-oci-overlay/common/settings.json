@@ -9,9 +9,8 @@
   "python.linting.enabled": false,
   "security.workspace.trust.enabled": false,
   "telemetry.telemetryLevel": "off",
-  "java.configuration.checkProjectSettingsExclusions": false,
   "java.help.firstView": "overview",
-  "java.semanticHighlighting.enabled": false,
+  "java.dependency.enableDependencyCheckup": false,
   "files.exclude": {
     "**/.classpath": true,
     "**/.project": true,

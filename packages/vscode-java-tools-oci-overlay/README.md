@@ -39,7 +39,9 @@ The same script merges the package's editor settings, `settings.json`,
 into the user settings, `~/.local/share/code-server/User/settings.json`.
 A setting the package sets replaces one of the same name, and every other
 setting, such as those the workshop image sets, is kept. The package's
-settings turn off update checks and telemetry, hide the Eclipse project
+settings turn off update checks, telemetry and the Project Manager's
+dependency checkup, which suggests upgrading old Java and Spring versions
+and reports known vulnerabilities. They also hide the Eclipse project
 files from the explorer, and have the Java language server update a
 project's build configuration automatically.
 
