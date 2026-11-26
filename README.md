@@ -122,11 +122,18 @@ It takes one or more packages, and:
    with `educates cluster workshop deploy --open-browser`.
 
 Run `educates local registry deploy` first, to start the local registry.
-`try` prints where it wrote the workshop and, after deploying it, the
-command that deletes it, such as
-`educates docker workshop delete --file DIR`. `--no-deploy` stops before
+`try` prints where it wrote the workshop. `--no-deploy` stops before
 deploying, so that the workshop can be inspected, or kept as a starting
 point for a real one.
+
+A deployed workshop keeps running until it is deleted, and under Docker
+every workshop `try` deploys takes the same port, so delete one before
+trying packages again. The command that deletes it is
+`educates docker workshop delete --file DIR`, or
+`educates cluster workshop delete --file DIR` with `--cluster`, `DIR`
+being where `try` wrote the workshop. `try` prints it after deploying the
+workshop, and the workshop's last page gives it too, with a button that
+copies it.
 
 `--package-delivery image-mount` or `--package-delivery fetch` is passed
 to `educates docker workshop deploy`, to force a delivery other than the
@@ -156,7 +163,7 @@ Its first page shows, for each package, the package manifest, the
 programs in its `bin` and the line of `download-workshop.log` saying how
 the platform delivered it, `image mount` or `package fetch`, as commands
 to click. The validation page of each package that has one follows, in
-package name order.
+package name order, and the page on deleting the workshop comes last.
 
 ### Package sources
 

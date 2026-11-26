@@ -115,6 +115,12 @@ page_commands() {
   sed -n '/^command: |-$/{n;s/^  //;p;}' "$1"
 }
 
+# Prints the text of each workshop:copy action on a workshop page, one per
+# line, in page order.
+page_copy_texts() {
+  sed -n '/^text: |-$/{n;s/^  //;p;}' "$1"
+}
+
 # Prints the value of the `Digest:` line in the output of a publish.
 published_digest() {
   printf '%s\n' "$1" | sed -n 's/^Digest: //p'

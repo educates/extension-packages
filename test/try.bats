@@ -37,6 +37,7 @@ setup() {
   [ "$(list_files "$dir")" = "$(cat <<'EOF'
 644 resources/workshop.yaml
 644 workshop/content/00-packages.md
+644 workshop/content/01-delete-workshop.md
 EOF
 )" ]
   [ "$(cat "$dir/resources/workshop.yaml")" = "$(cat <<'EOF'
@@ -108,6 +109,7 @@ EOF
 644 resources/workshop.yaml
 644 workshop/content/00-packages.md
 644 workshop/content/01-notes.md
+644 workshop/content/02-delete-workshop.md
 EOF
 )" ]
   [ "$(generated_workshop_name "$dir")" = try-hello-notes ]
@@ -141,10 +143,30 @@ EOF
   run "$SCRIPT" try --no-deploy --output "$dir" notes hello notes
 
   [ "$status" -eq 0 ]
-  [ "$(cd "$dir/workshop/content" && ls)" = "$(printf '00-packages.md\n01-hello.md\n02-notes.md')" ]
+  [ "$(cd "$dir/workshop/content" && ls)" = "$(printf '00-packages.md\n01-hello.md\n02-notes.md\n03-delete-workshop.md')" ]
   [ "$(cat "$dir/workshop/content/01-hello.md")" = "$(cat "$REPO/packages/hello/workshop.md")" ]
   [ "$(cat "$dir/workshop/content/02-notes.md")" = "$(cat "$REPO/packages/notes/workshop.md")" ]
   [ "$(generated_workshop_name "$dir")" = try-hello-notes ]
+}
+
+@test "try ends the workshop with a page that copies the command deleting it" {
+  require_local_registry
+  mkdir -p "$BATS_TEST_TMPDIR/cwd"
+  cd "$BATS_TEST_TMPDIR/cwd"
+  local spaced="$BATS_TEST_TMPDIR/cwd/a workshop"
+
+  run --separate-stderr "$SCRIPT" try --no-deploy --output docker hello
+  [ "$status" -eq 0 ]
+  [ "$(sed -n 2p docker/workshop/content/01-delete-workshop.md)" = "title: Deleting the workshop" ]
+  [ "$(page_copy_texts docker/workshop/content/01-delete-workshop.md)" = "educates docker workshop delete --file $BATS_TEST_TMPDIR/cwd/docker" ]
+
+  run --separate-stderr "$SCRIPT" try --no-deploy --cluster --output cluster hello
+  [ "$status" -eq 0 ]
+  [ "$(page_copy_texts cluster/workshop/content/01-delete-workshop.md)" = "educates cluster workshop delete --file $BATS_TEST_TMPDIR/cwd/cluster" ]
+
+  run --separate-stderr "$SCRIPT" try --no-deploy --output "$spaced" hello
+  [ "$status" -eq 0 ]
+  [ "$(command_words "$(page_copy_texts "$spaced/workshop/content/01-delete-workshop.md")")" = "$(printf '%s\n' educates docker workshop delete --file "$spaced")" ]
 }
 
 @test "try shortens a long workshop name with a hash, to a DNS label a cluster deploy accepts" {

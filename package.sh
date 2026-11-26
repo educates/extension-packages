@@ -376,14 +376,15 @@ render() {
   done < "$template"
 }
 
-# write_workshop DIR WORKSHOP WORKSHOP_IMAGE <package>...
+# write_workshop DIR WORKSHOP WORKSHOP_IMAGE DELETE_COMMAND <package>...
 #
 # Writes the workshop named WORKSHOP for the packages, in the order given,
 # into DIR. An empty WORKSHOP_IMAGE leaves the workshop image the
-# platform's default.
+# platform's default. The last page gives DELETE_COMMAND, which deletes
+# the workshop once deployed.
 write_workshop() {
-  local dir=$1 workshop=$2 workshop_image=$3
-  shift 3
+  local dir=$1 workshop=$2 workshop_image=$3 delete_command=$4
+  shift 4
   local nl=$'\n'
   local name version declarations="" sections=""
 
@@ -403,7 +404,8 @@ write_workshop() {
     PACKAGE_SECTIONS="$sections" > "$dir/workshop/content/00-packages.md"
 
   # The workshop orders its pages by file name, so each validation page is
-  # numbered after the packages page.
+  # numbered after the packages page, and the page on deleting the
+  # workshop after them all.
   local page=0
   for name in "$@"; do
     if [ -f "$PACKAGES_DIR/$name/workshop.md" ]; then
@@ -412,12 +414,15 @@ write_workshop() {
         "$dir/workshop/content/$(printf '%02d' "$page")-$name.md"
     fi
   done
+  page=$((page + 1))
+  render delete-page.md DELETE_COMMAND="$delete_command" \
+    > "$dir/workshop/content/$(printf '%02d' "$page")-delete-workshop.md"
 }
 
 cmd_try() {
   local deploy=true cluster=false delivery="" output="" workshop_image=""
   local names=() deploy_flags=()
-  local selected workshop dir
+  local selected workshop dir target delete_command
 
   while [ $# -gt 0 ]; do
     case $1 in
@@ -484,8 +489,15 @@ cmd_try() {
   # path of its definition, so that is the path it is given.
   workshop=$(workshop_name $selected)
   dir=${output:-$(mktemp -d "${TMPDIR:-/tmp}/extension-packages-try.XXXXXX")}
-  write_workshop "$dir" "$workshop" "$workshop_image" $selected
+  mkdir -p "$dir"
   dir=$(cd "$dir" && pwd)
+  if [ "$cluster" = true ]; then
+    target=cluster
+  else
+    target=docker
+  fi
+  delete_command=$(printf 'educates %s workshop delete --file %q' "$target" "$dir")
+  write_workshop "$dir" "$workshop" "$workshop_image" "$delete_command" $selected
   educates workshop publish "$dir" --image-repository "$LOCAL_REGISTRY"
   echo "Workshop $workshop written to $dir."
 
@@ -494,15 +506,18 @@ cmd_try() {
   fi
   if [ "$cluster" = true ]; then
     educates cluster workshop deploy --file "$dir" --open-browser
-    printf 'To delete the workshop: educates cluster workshop delete --file %q\n' "$dir"
   else
     if [ -n "$delivery" ]; then
       deploy_flags+=(--package-delivery "$delivery")
     fi
     educates docker workshop deploy --file "$dir" \
       ${deploy_flags[@]+"${deploy_flags[@]}"}
-    printf 'To delete the workshop: educates docker workshop delete --file %q\n' "$dir"
   fi
+  echo
+  echo "The workshop keeps running until it is deleted. Its last page gives"
+  echo "the command that deletes it, which is:"
+  echo
+  printf 'To delete the workshop: %s\n' "$delete_command"
 }
 
 main() {
