@@ -1,5 +1,5 @@
 apiVersion: packages.educates.dev/v1alpha1
 kind: ExtensionPackage
 name: crane
-version: 0.19.1
+version: 0.22.1
 description: The crane command line tool for container registries, with bash completion.

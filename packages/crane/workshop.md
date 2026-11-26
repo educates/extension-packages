@@ -23,7 +23,7 @@ command: |-
   crane version
 ```
 
-It should print `0.19.1`, on either architecture.
+It should print `0.22.1`, on either architecture.
 
 ## Completion in a new terminal
 

@@ -1,7 +1,7 @@
 # crane
 
 The [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md)
-command line tool, `crane`, version 0.19.1, for linux/amd64 and
+command line tool, `crane`, version 0.22.1, for linux/amd64 and
 linux/arm64. crane works with images in remote registries directly, with no
 container runtime.
 
@@ -27,5 +27,5 @@ spec:
   workshop:
     packages:
     - name: crane
-      image: ghcr.io/educates/extension-packages/crane:0.19.1
+      image: ghcr.io/educates/extension-packages/crane:0.22.1
 ```
