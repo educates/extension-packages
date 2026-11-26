@@ -1,7 +1,7 @@
 # vcluster
 
 The [vCluster](https://www.vcluster.com/) command line tool, `vcluster`,
-version 0.30.3, for linux/amd64 and linux/arm64.
+version 0.38.0, for linux/amd64 and linux/arm64.
 
 ## What it provides
 
@@ -31,5 +31,5 @@ spec:
   workshop:
     packages:
     - name: vcluster
-      image: ghcr.io/educates/extension-packages/vcluster:0.30.3
+      image: ghcr.io/educates/extension-packages/vcluster:0.38.0
 ```

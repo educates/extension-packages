@@ -15,7 +15,7 @@ command: |-
   vcluster version
 ```
 
-It should print `vcluster version 0.30.3`.
+It should print `vcluster version 0.38.0`.
 
 ## Completion in a new terminal
 

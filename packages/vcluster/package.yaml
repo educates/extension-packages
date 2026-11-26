@@ -1,5 +1,5 @@
 apiVersion: packages.educates.dev/v1alpha1
 kind: ExtensionPackage
 name: vcluster
-version: 0.30.3
+version: 0.38.0
 description: The vCluster command line tool, vcluster, with bash completion.
