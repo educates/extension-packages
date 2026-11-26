@@ -215,10 +215,9 @@ and these helpers defined:
   bit and 0644 otherwise.
 
 `$DOWNLOADS` names an empty directory for the downloads, which is removed
-afterwards. A fetch script takes the version from the manifest, so a new
-version changes the version in `package.yaml` and the recorded checksums.
-It also changes the package's reference, `<name>:<version>`, in the
-package's README and in its row of the [Packages](#packages) table.
+afterwards. A fetch script takes the version from the manifest.
+[Adding or updating a package](#adding-or-updating-a-package) lists what
+else a new version changes.
 
 ### Setup scripts
 
@@ -244,6 +243,57 @@ for the workshop's Hugo renderer, starting with front matter that gives
 its `title`. Its clickable actions check what the package provides, such
 as running a program in a new terminal or opening the editor. `try` adds
 only the page, so the page must need nothing outside the package.
+
+### Adding or updating a package
+
+A package's version is set in one place the tooling reads, the `version`
+in `package.yaml`: `fetch` downloads that version, and `publish` tags the
+image with it. It also appears in places nothing checks against the
+manifest:
+
+- the sha256 of each download, recorded in `fetch.sh`;
+- the package's reference, `<name>:<version>`, in its README and in its
+  row of the [Packages](#packages) table;
+- the package's validation page, where it checks the version a program
+  prints.
+
+Changing only the version in `package.yaml` fails the fetch, since the new
+downloads don't match the recorded checksums. Updating the checksums as
+well still leaves the documents naming the old version.
+
+The `maintain-package` skill, in `.claude/skills/maintain-package/`, does
+the whole change with [Claude Code](https://claude.com/claude-code). Ask
+Claude to add a package for a tool or to move a package to a newer
+version, or run the skill with what to do:
+
+```
+/maintain-package add the latest helm
+/maintain-package bump argocd to the latest release
+```
+
+It looks up the upstream release and confirms each checksum against the
+one upstream publishes. It writes the new package, or updates every place
+the version appears, following the closest existing package. It then runs
+these checks:
+
+1. the fetch, and the architecture of each program it fetches;
+2. `publish --dry-run`;
+3. the package's setup scripts, run twice in the Educates base image with
+   the package mounted read only, by
+   `.claude/skills/maintain-package/scripts/check-setup.sh`;
+4. the workshop `try --no-deploy` writes;
+5. the bats suite, when the change touches the tooling.
+
+The skill leaves the live `try` session to you.
+
+Without Claude Code, follow the same steps by hand: `ADD.md` in the
+skill's directory for a new package, `BUMP.md` for a new version, and the
+checks in its `SKILL.md`. `check-setup.sh` runs on its own, from the
+repository root, after `./package.sh fetch <package>`:
+
+```
+.claude/skills/maintain-package/scripts/check-setup.sh <package>
+```
 
 ### Tests
 
