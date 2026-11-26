@@ -14,9 +14,12 @@ command: |-
   thv version
 ```
 
-It should print `ToolHive v0.1.7`, with the commit and build date. `thv`
-first checks for a newer ToolHive release, so it may also print that a
-newer version is available, while the package stays on 0.1.7.
+It should print `ToolHive v0.69.1`, followed by the commit, build date, Go
+version and platform, which is `linux/amd64` or `linux/arm64` to match the
+session. `thv` first checks for a newer ToolHive release, so it may also
+print that a newer version is available, while the package stays on
+0.69.1. When the session can't reach ToolHive's update service, it prints
+a warning that it could not check for updates instead.
 
 ## Completion in a new terminal
 

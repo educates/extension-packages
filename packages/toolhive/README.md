@@ -1,7 +1,7 @@
 # toolhive
 
 The [ToolHive](https://github.com/stacklok/toolhive) command line tool,
-`thv`, version 0.1.7, for linux/amd64 and linux/arm64. ToolHive runs Model
+`thv`, version 0.69.1, for linux/amd64 and linux/arm64. ToolHive runs Model
 Context Protocol (MCP) servers in containers.
 
 ## What it provides
@@ -22,7 +22,7 @@ spec:
   workshop:
     packages:
     - name: toolhive
-      image: ghcr.io/educates/extension-packages/toolhive:0.1.7
+      image: ghcr.io/educates/extension-packages/toolhive:0.69.1
 ```
 
 The package holds only the command line tool. thv runs each MCP server in
@@ -31,4 +31,6 @@ container runtime that thv can reach.
 
 Every `thv` command except `completion` checks for a newer ToolHive
 release when it starts, and prints a notice when there is one. The setup
-script only generates the completion, so it makes no such check.
+script only generates the completion, so it makes no such check. A
+workshop turns the check off by setting `TOOLHIVE_SKIP_UPDATE_CHECK` to
+`true` in the session's environment.

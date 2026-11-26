@@ -1,5 +1,5 @@
 apiVersion: packages.educates.dev/v1alpha1
 kind: ExtensionPackage
 name: toolhive
-version: 0.1.7
+version: 0.69.1
 description: The ToolHive command line tool for MCP servers, thv, with bash completion.
