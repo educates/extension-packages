@@ -7,11 +7,13 @@
 # setup script fails on either run, or when the second run leaves a line
 # repeated in ~/.bashrc. It then shows each run's time, the package's setup
 # log, its programs, their completion in a new terminal, and the editor's
-# extensions.
+# extensions. Given a COMMAND, it runs it last in a new terminal's shell,
+# with the environment the setup scripts gave the session, shows what it
+# prints, and fails when it fails.
 #
 # Usage, from the repository root, after ./package.sh fetch PACKAGE:
 #
-#   check-setup.sh PACKAGE [linux-amd64|linux-arm64]
+#   check-setup.sh PACKAGE [linux-amd64|linux-arm64] [-- COMMAND]
 #
 # The platform defaults to this machine's. The image defaults to the base
 # environment image of the educates release that CI pins; set BASE_IMAGE to
@@ -20,9 +22,22 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: $0 PACKAGE [linux-amd64|linux-arm64]" >&2
+  echo "Usage: $0 PACKAGE [linux-amd64|linux-arm64] [-- COMMAND]" >&2
   exit 2
 }
+
+command=""
+arguments=()
+while [ $# -gt 0 ]; do
+  if [ "$1" = -- ]; then
+    shift
+    command=$*
+    break
+  fi
+  arguments+=("$1")
+  shift
+done
+set -- ${arguments[@]+"${arguments[@]}"}
 
 [ $# -ge 1 ] && [ $# -le 2 ] || usage
 
@@ -73,6 +88,7 @@ echo "Checking $name for $platform in $image"
 docker run --rm -i \
   --platform "linux/${platform#linux-}" \
   --env ENABLE_EDITOR=true \
+  --env "CHECK_COMMAND=$command" \
   --volume "$overlay:/opt/packages/$name:ro" \
   --entrypoint bash \
   "$image" -s -- "$name" <<'INSIDE'
@@ -141,9 +157,37 @@ if [ -d "$package_dir/extensions" ]; then
   code-server --list-extensions --show-versions 2> /dev/null
 fi
 
+# A terminal inherits what rebuild-workshop exported, which these rollups
+# replay in the order it ran the setup scripts.
+if [ $status = 0 ] && [ -n "$CHECK_COMMAND" ]; then
+  echo
+  echo "== $CHECK_COMMAND"
+  rc=0
+  (
+    set -a
+    for rollup in builtin packages content homedir; do
+      rollup=$HOME/.local/share/workshop/workshop-env-$rollup.sh
+      [ ! -f "$rollup" ] || . "$rollup"
+    done
+    set +a
+    bash -il -c "$CHECK_COMMAND"
+  ) > "$HOME/command.txt" 2>&1 || rc=$?
+  grep -v -e 'cannot set terminal process group' -e 'no job control' \
+    "$HOME/command.txt" || true
+  rm -f "$HOME/command.txt"
+  if [ $rc != 0 ]; then
+    echo "FAIL: the command exited with status $rc"
+    status=1
+  fi
+fi
+
 echo
 if [ $status = 0 ]; then
-  echo "PASS: $name set up twice with no failure and no repeated ~/.bashrc line"
+  if [ -n "$CHECK_COMMAND" ]; then
+    echo "PASS: $name set up twice with no failure and no repeated ~/.bashrc line, and the command succeeded"
+  else
+    echo "PASS: $name set up twice with no failure and no repeated ~/.bashrc line"
+  fi
 fi
 exit $status
 INSIDE

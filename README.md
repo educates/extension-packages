@@ -276,11 +276,13 @@ one upstream publishes. It writes the new package, or updates every place
 the version appears, following the closest existing package. It then runs
 these checks:
 
-1. the fetch, and the architecture of each program it fetches;
+1. the fetch, and that each platform directory holds that platform's
+   programs and extension builds;
 2. `publish --dry-run`;
 3. the package's setup scripts, run twice in the Educates base image with
-   the package mounted read only, by
-   `.claude/skills/maintain-package/scripts/check-setup.sh`;
+   the package mounted read only, for each platform, followed by the
+   validation page's commands, whose output it compares with what the
+   page says, by `.claude/skills/maintain-package/scripts/check-setup.sh`;
 4. the workshop `try --no-deploy` writes;
 5. the bats suite, when the change touches the tooling.
 
@@ -289,10 +291,12 @@ The skill leaves the live `try` session to you.
 Without Claude Code, follow the same steps by hand: `ADD.md` in the
 skill's directory for a new package, `BUMP.md` for a new version, and the
 checks in its `SKILL.md`. `check-setup.sh` runs on its own, from the
-repository root, after `./package.sh fetch <package>`:
+repository root, after `./package.sh fetch <package>`. It checks this
+machine's platform unless one is named, and runs the command given after
+`--` in a new terminal's shell once the setup is done:
 
 ```
-.claude/skills/maintain-package/scripts/check-setup.sh <package>
+.claude/skills/maintain-package/scripts/check-setup.sh <package> [linux-amd64|linux-arm64] [-- <command>]
 ```
 
 ### Tests
