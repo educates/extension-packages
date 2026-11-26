@@ -36,7 +36,7 @@ command: |-
 
 The directory should hold a directory for each extension, and the log a
 line such as `vscode-java-tools-oci-overlay put 7 extensions in place in
-0.353 seconds`.
+0.108 seconds`.
 
 The copy of `redhat.java` should be the build for the session's
 architecture, whose Java runtime names the same machine as `uname -m`:

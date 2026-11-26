@@ -33,7 +33,7 @@ for the same extension, so running the script again, as
 `rebuild-workshop` does, leaves one entry for each. The script reports how
 long it took in the setup log,
 `~/.local/share/workshop/setup-scripts.log`, as a line such as
-`vscode-java-tools-oci-overlay put 7 extensions in place in 0.353 seconds`.
+`vscode-java-tools-oci-overlay put 7 extensions in place in 0.108 seconds`.
 
 The same script merges the package's editor settings, `settings.json`,
 into the user settings, `~/.local/share/code-server/User/settings.json`.
@@ -48,11 +48,20 @@ project's build configuration automatically.
 ## Choosing between the Java packages
 
 vscode-java-tools installs the extensions from their `.vsix` files when
-the session starts, which unpacks them then. This package is unpacked when
-it is published, so the session only copies files, and starts the editor
-with its extensions sooner. The cost is a larger image: unpacked, the
-extensions take about 270 MB for each architecture, where their `.vsix`
-files take about 195 MB. Declare one of the two packages, not both.
+the session starts. This package is unpacked when it is published, so the
+session only copies files. Measured in sessions on an arm64 cluster node,
+this package's setup took about 0.1 seconds and vscode-java-tools' about
+4.5, so a session has its editor extensions about 4 seconds sooner.
+
+The image is hardly larger to download, about 202 MB for each
+architecture against 192 MB, since the `.vsix` files are compressed
+already. Unpacked on the node, it takes about 274 MB against 193 MB.
+
+What this package gives up is going through code-server to install: it
+writes code-server's `extensions.json` itself, in the form code-server
+used when the package was built. A code-server release that changed that
+form would break this package and not vscode-java-tools. Declare one of
+the two packages, not both.
 
 ## Using it
 

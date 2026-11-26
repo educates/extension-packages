@@ -20,8 +20,15 @@ the editor:
 - `vscjava.vscode-java-pack` 0.31.2, the Extension Pack for Java itself.
 
 The pack lists the other six extensions and nothing else. The script
-installs them before the pack, so installing the pack needs no network
-access.
+installs them before the pack, so installing the pack doesn't need the
+network, though when the extension gallery can be reached, code-server
+still asks it about the pack, which took about half a second in a
+measured session. A rerun, as `rebuild-workshop` makes, installs only an
+extension the editor doesn't already have at that version.
+
+vscode-java-tools-oci-overlay provides the same extensions unpacked ahead
+of time, so that a session has them about 4 seconds sooner; its README
+compares the two.
 
 The same script merges the package's editor settings, `settings.json`,
 into the user settings, `~/.local/share/code-server/User/settings.json`.
