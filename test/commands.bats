@@ -16,6 +16,16 @@ setup() {
   [ "$output" = "$(printf 'another\nhello')" ]
 }
 
+@test "list puts a name before the longer names it begins" {
+  cp -R "$REPO/packages/hello" "$REPO/packages/hello-world"
+  cp -R "$REPO/packages/hello" "$REPO/packages/hellos"
+
+  run "$SCRIPT" list
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$(printf 'hello\nhello-world\nhellos')" ]
+}
+
 @test "list prints nothing when there are no packages" {
   rm -rf "$REPO/packages/hello"
 

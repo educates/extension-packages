@@ -184,13 +184,14 @@ unpack_zip() {
 FETCH_HELPERS="manifest_version sha256_of download install_file extract_tar unpack_zip"
 
 # Prints the name of every package: each directory under packages/ that
-# holds a package.yaml, in name order.
+# holds a package.yaml, in name order. The names are sorted themselves, as
+# the paths would put a name after the longer names it begins.
 package_names() {
   local manifest
   for manifest in "$PACKAGES_DIR"/*/package.yaml; do
     [ -f "$manifest" ] || continue
     basename "$(dirname "$manifest")"
-  done
+  done | LC_ALL=C sort
 }
 
 cmd_list() {
