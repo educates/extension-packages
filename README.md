@@ -21,8 +21,8 @@ with the `files` form.
 | [helm](packages/helm/README.md) | `ghcr.io/educates/extension-packages/helm:4.3.2` | The Helm package manager for Kubernetes, helm, with bash completion. |
 | [toolhive](packages/toolhive/README.md) | `ghcr.io/educates/extension-packages/toolhive:0.69.1` | The ToolHive command line tool for MCP servers, thv, with bash completion. |
 | [vcluster](packages/vcluster/README.md) | `ghcr.io/educates/extension-packages/vcluster:0.38.0` | The vCluster command line tool, vcluster, with bash completion. |
-| [vscode-java-tools](packages/vscode-java-tools/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools:0.29.2` | The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor. |
-| [vscode-java-tools-oci-overlay](packages/vscode-java-tools-oci-overlay/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools-oci-overlay:0.29.2` | The Extension Pack for Java for the workshop editor, unpacked ahead of time and copied into place without installing it, for a faster start. |
+| [vscode-java-tools](packages/vscode-java-tools/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools:0.31.2` | The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor. |
+| [vscode-java-tools-oci-overlay](packages/vscode-java-tools-oci-overlay/README.md) | `ghcr.io/educates/extension-packages/vscode-java-tools-oci-overlay:0.31.2` | The Extension Pack for Java for the workshop editor, unpacked ahead of time and copied into place without installing it, for a faster start. |
 
 ## Using a package
 

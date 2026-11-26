@@ -3,15 +3,15 @@
       "identifier": {
         "id": "redhat.java"
       },
-      "version": "1.42.0",
+      "version": "1.58.0",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/redhat.java-1.42.0",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/redhat.java-1.58.0",
         "scheme": "file"
       },
-      "relativeLocation": "redhat.java-1.42.0",
+      "relativeLocation": "redhat.java-1.58.0",
       "metadata": {
-        "installedTimestamp": 1749552865557,
+        "installedTimestamp": 1795684807315,
         "pinned": true,
         "source": "vsix"
       }
@@ -20,15 +20,15 @@
       "identifier": {
         "id": "vscjava.vscode-java-debug"
       },
-      "version": "0.58.2",
+      "version": "0.60.0",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-debug-0.58.2",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-debug-0.60.0",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-java-debug-0.58.2",
+      "relativeLocation": "vscjava.vscode-java-debug-0.60.0",
       "metadata": {
-        "installedTimestamp": 1749552868722,
+        "installedTimestamp": 1795684808436,
         "pinned": true,
         "source": "vsix"
       }
@@ -37,15 +37,15 @@
       "identifier": {
         "id": "vscjava.vscode-java-test"
       },
-      "version": "0.43.1",
+      "version": "0.47.0",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-test-0.43.1",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-test-0.47.0",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-java-test-0.43.1",
+      "relativeLocation": "vscjava.vscode-java-test-0.47.0",
       "metadata": {
-        "installedTimestamp": 1749552868954,
+        "installedTimestamp": 1795684808669,
         "pinned": true,
         "source": "vsix"
       }
@@ -54,15 +54,15 @@
       "identifier": {
         "id": "vscjava.vscode-maven"
       },
-      "version": "0.44.0",
+      "version": "0.45.3",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-maven-0.44.0",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-maven-0.45.3",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-maven-0.44.0",
+      "relativeLocation": "vscjava.vscode-maven-0.45.3",
       "metadata": {
-        "installedTimestamp": 1749552869204,
+        "installedTimestamp": 1795684808928,
         "pinned": true,
         "source": "vsix"
       }
@@ -71,15 +71,15 @@
       "identifier": {
         "id": "vscjava.vscode-gradle"
       },
-      "version": "3.15.0",
+      "version": "3.18.0",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-gradle-3.15.0",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-gradle-3.18.0",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-gradle-3.15.0",
+      "relativeLocation": "vscjava.vscode-gradle-3.18.0",
       "metadata": {
-        "installedTimestamp": 1749552869567,
+        "installedTimestamp": 1795684809226,
         "pinned": true,
         "source": "vsix"
       }
@@ -88,15 +88,15 @@
       "identifier": {
         "id": "vscjava.vscode-java-dependency"
       },
-      "version": "0.24.1",
+      "version": "0.27.7",
       "location": {
         "$mid": 1,
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-dependency-0.24.1",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-dependency-0.27.7",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-java-dependency-0.24.1",
+      "relativeLocation": "vscjava.vscode-java-dependency-0.27.7",
       "metadata": {
-        "installedTimestamp": 1749552870224,
+        "installedTimestamp": 1795684809663,
         "pinned": true,
         "source": "vsix"
       }
@@ -105,17 +105,17 @@
       "identifier": {
         "id": "vscjava.vscode-java-pack"
       },
-      "version": "0.29.2",
+      "version": "0.31.2",
       "location": {
         "$mid": 1,
-        "fsPath": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.29.2",
-        "external": "file:///home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.29.2",
-        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.29.2",
+        "fsPath": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
+        "external": "file:///home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
+        "path": "/home/eduk8s/.local/share/code-server/extensions/vscjava.vscode-java-pack-0.31.2",
         "scheme": "file"
       },
-      "relativeLocation": "vscjava.vscode-java-pack-0.29.2",
+      "relativeLocation": "vscjava.vscode-java-pack-0.31.2",
       "metadata": {
-        "installedTimestamp": 1749552870442,
+        "installedTimestamp": 1795684809951,
         "pinned": true,
         "source": "vsix"
       }

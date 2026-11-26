@@ -33,32 +33,32 @@ unpack_vscjava_extension() {
   unpack_extension "$DOWNLOADS/$vsix" "common/extensions/vscjava.$1-$2"
 }
 
-redhat_java=https://github.com/redhat-developer/vscode-java/releases/download/v1.42.0
+redhat_java=https://github.com/redhat-developer/vscode-java/releases/download/v1.58.0
 
-download "$redhat_java/java-linux-x64-1.42.0-561.vsix" \
-  7660b7b527be6fda46a917966b34d828e7416d5cc84287b29b88e7b99c1737f9 \
+download "$redhat_java/java-linux-x64-1.58.0-1114.vsix" \
+  45049a2273c78814287fb31a45255e5ce1fdbe34161bb9f1ba8f62a6aa84bdfc \
   "$DOWNLOADS/redhat.java-linux-x64.vsix"
 unpack_extension "$DOWNLOADS/redhat.java-linux-x64.vsix" \
-  linux-amd64/extensions/redhat.java-1.42.0
+  linux-amd64/extensions/redhat.java-1.58.0
 
-download "$redhat_java/java-linux-arm64-1.42.0-561.vsix" \
-  e15bc9b2a665d3453203402621b5441062aa41b0ec2d140661f439326fd248c1 \
+download "$redhat_java/java-linux-arm64-1.58.0-1114.vsix" \
+  09e2fa38e2f28304bcb530d46cf17a7996b904b981acb04cef9356f42acf4c61 \
   "$DOWNLOADS/redhat.java-linux-arm64.vsix"
 unpack_extension "$DOWNLOADS/redhat.java-linux-arm64.vsix" \
-  linux-arm64/extensions/redhat.java-1.42.0
+  linux-arm64/extensions/redhat.java-1.58.0
 
-unpack_vscjava_extension vscode-java-debug 0.58.2 \
-  1dc2a6c87abc9a4309c65bffb44952ba1e95b70a30d16058a38f37b142ca64b2
-unpack_vscjava_extension vscode-java-test 0.43.1 \
-  16f091b1683cd07845671727b4b1332092660887f08b6af5c76225bfdc071f07
-unpack_vscjava_extension vscode-maven 0.44.0 \
-  e42b9eb56fe46d619ae81b766d61f291d04685ded8e3e999603f923299d5890c
-unpack_vscjava_extension vscode-gradle 3.15.0 \
-  fda5ffe9d783faf5c5d8317a57fb978e2d3fd00d235e44c01917ab9900e3a4d2
-unpack_vscjava_extension vscode-java-dependency 0.24.1 \
-  2ce3dbb53c30184a80832357d9d31f994bc851a5371a5e375c21b0c92bd877bb
+unpack_vscjava_extension vscode-java-debug 0.60.0 \
+  f09ebe358a7b08b3c17b21b8d8207b0649acad120eb6f1604dc4f15379f59d66
+unpack_vscjava_extension vscode-java-test 0.47.0 \
+  0fba1ecd2913f40185a8a91c0e5f342418b67dbe0516d813e0ae6b514c1fff99
+unpack_vscjava_extension vscode-maven 0.45.3 \
+  2d7b30676793604e0c140ab0e5cc5a649d6af2fd9e0b2797911f86a9164654b0
+unpack_vscjava_extension vscode-gradle 3.18.0 \
+  a0466d8e44b873d2a4e83155d4b7b68d4ff7d989a618f2f54513ae9d7c686dfa
+unpack_vscjava_extension vscode-java-dependency 0.27.7 \
+  da7c82e61e69f66dfe0ad66a3bb517772944ee065122b672ccf7de40dd3bb469
 unpack_vscjava_extension vscode-java-pack "$version" \
-  a808f61a13846e11d45a249ca967d2396939bdd66f40f268960b21a1d3faaec0
+  911168da03c2d416b83a77cea9e52e396c616e73d8e2b5a58ebf4dd508667cca
 
 # The setup script copies every unpacked directory and adds the entries of
 # extensions.json, so for each platform the two must name the same

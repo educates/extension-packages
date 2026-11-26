@@ -1,7 +1,7 @@
 # vscode-java-tools-oci-overlay
 
 The [Extension Pack for Java](https://github.com/microsoft/vscode-java-pack),
-version 0.29.2, and the extensions it brings together, for the workshop
+version 0.31.2, and the extensions it brings together, for the workshop
 editor, on linux/amd64 and linux/arm64. It holds the same extensions as
 [vscode-java-tools](../vscode-java-tools/README.md), unpacked ahead of
 time, so that the session copies them into place instead of installing
@@ -12,18 +12,18 @@ them.
 The package holds these extensions unpacked, as the editor keeps an
 extension once it is installed:
 
-- `redhat.java` 1.42.0, Language Support for Java by Red Hat, which runs
+- `redhat.java` 1.58.0, Language Support for Java by Red Hat, which runs
   the Java language server. The package holds a build of it for each
   architecture, and the session gets the one for its own.
-- `vscjava.vscode-java-debug` 0.58.2, the Debugger for Java.
-- `vscjava.vscode-java-test` 0.43.1, the Test Runner for Java.
-- `vscjava.vscode-maven` 0.44.0, Maven for Java.
-- `vscjava.vscode-gradle` 3.15.0, Gradle for Java.
-- `vscjava.vscode-java-dependency` 0.24.1, the Project Manager for Java.
-- `vscjava.vscode-java-pack` 0.29.2, the Extension Pack for Java itself.
+- `vscjava.vscode-java-debug` 0.60.0, the Debugger for Java.
+- `vscjava.vscode-java-test` 0.47.0, the Test Runner for Java.
+- `vscjava.vscode-maven` 0.45.3, Maven for Java.
+- `vscjava.vscode-gradle` 3.18.0, Gradle for Java.
+- `vscjava.vscode-java-dependency` 0.27.7, the Project Manager for Java.
+- `vscjava.vscode-java-pack` 0.31.2, the Extension Pack for Java itself.
 
-The pack also lists IntelliCode, which the package doesn't hold, so the
-editor has no IntelliCode.
+The pack lists the other six extensions and nothing else, so the package
+holds the whole pack.
 
 When the session starts, a setup script copies each extension into the
 editor's extensions directory, `~/.local/share/code-server/extensions`,
@@ -70,7 +70,7 @@ spec:
     image: jdk21-environment:*
     packages:
     - name: vscode-java-tools-oci-overlay
-      image: ghcr.io/educates/extension-packages/vscode-java-tools-oci-overlay:0.29.2
+      image: ghcr.io/educates/extension-packages/vscode-java-tools-oci-overlay:0.31.2
   session:
     resources:
       memory: 3Gi

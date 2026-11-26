@@ -17,13 +17,13 @@ command: |-
 
 Beside the Educates extension, the list should hold these seven:
 
-- `redhat.java@1.42.0`
-- `vscjava.vscode-gradle@3.15.0`
-- `vscjava.vscode-java-debug@0.58.2`
-- `vscjava.vscode-java-dependency@0.24.1`
-- `vscjava.vscode-java-pack@0.29.2`
-- `vscjava.vscode-java-test@0.43.1`
-- `vscjava.vscode-maven@0.44.0`
+- `redhat.java@1.58.0`
+- `vscjava.vscode-gradle@3.18.0`
+- `vscjava.vscode-java-debug@0.60.0`
+- `vscjava.vscode-java-dependency@0.27.7`
+- `vscjava.vscode-java-pack@0.31.2`
+- `vscjava.vscode-java-test@0.47.0`
+- `vscjava.vscode-maven@0.45.3`
 
 The setup script copied each one into the editor's extensions directory
 and reported how long that took:
@@ -44,7 +44,7 @@ architecture, whose Java runtime names the same machine as `uname -m`:
 ```terminal:execute
 command: |-
   uname -m
-  ls ~/.local/share/code-server/extensions/redhat.java-1.42.0/jre
+  ls ~/.local/share/code-server/extensions/redhat.java-1.58.0/jre
 ```
 
 ## No duplicates after a rebuild

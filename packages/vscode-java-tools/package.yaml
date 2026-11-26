@@ -1,5 +1,5 @@
 apiVersion: packages.educates.dev/v1alpha1
 kind: ExtensionPackage
 name: vscode-java-tools
-version: 0.29.2
+version: 0.31.2
 description: The Extension Pack for Java, with Java language support, debugging, testing, Maven and Gradle, for the workshop editor.
