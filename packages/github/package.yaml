@@ -1,5 +1,5 @@
 apiVersion: packages.educates.dev/v1alpha1
 kind: ExtensionPackage
 name: github
-version: 2.74.2
+version: 2.106.0
 description: The GitHub command line tool, gh, with bash completion.

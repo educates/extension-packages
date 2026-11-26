@@ -14,7 +14,7 @@ command: |-
   gh --version
 ```
 
-The first line should be `gh version 2.74.2`, followed by the release
+The first line should be `gh version 2.106.0`, followed by the release
 date.
 
 ## Completion in a new terminal

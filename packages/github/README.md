@@ -1,6 +1,6 @@
 # github
 
-The [GitHub CLI](https://cli.github.com/), `gh`, version 2.74.2, for
+The [GitHub CLI](https://cli.github.com/), `gh`, version 2.106.0, for
 linux/amd64 and linux/arm64.
 
 ## What it provides
@@ -24,7 +24,7 @@ spec:
   workshop:
     packages:
     - name: github
-      image: ghcr.io/educates/extension-packages/github:2.74.2
+      image: ghcr.io/educates/extension-packages/github:2.106.0
 ```
 
 Most `gh` commands act on GitHub as a logged in user. The package sets up
